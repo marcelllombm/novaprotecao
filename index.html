@@ -1,849 +1,666 @@
 <!doctype html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#092331" />
-    <meta
-      name="description"
-      content="Siga seus caminhos com a Nova Proteção. Proteção veicular para carro e moto, assistência 24h, guincho, roubo e furto, perda total, terceiros e rastreador. Solicite uma cotação."
-    />
-    <meta
-      property="og:title"
-      content="Nova Proteção — A vida segue. A gente protege."
-    />
-    <meta
-      property="og:description"
-      content="Proteção para seu carro ou sua moto. Mais tranquilidade para os caminhos que importam."
-    />
-    <meta property="og:type" content="website" />
-    <meta property="og:locale" content="pt_BR" />
-    <meta
-      property="og:image"
-      content="https://nova-protecao-na-estrada.nosso-super-chat.chatgpt.site/assets/images/estrada-nova.webp"
-    />
-    <title>Nova Proteção — A vida segue. A gente protege.</title>
-    <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml" />
-    <link
-      rel="preload"
-      href="assets/fonts/sora-latin.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
-    <link
-      rel="preload"
-      href="assets/images/estrada-nova.webp"
-      as="image"
-      fetchpriority="high"
-    />
-    <link rel="stylesheet" href="css/styles.css" />
-    <script src="assets/vendor/motion.js" defer></script>
-    <script src="js/config.js" defer></script>
-    <script src="js/content.js" defer></script>
-    <script src="js/main.js" defer></script>
-  </head>
-  <body>
-    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
 
-    <!-- Ícones compartilhados: o desenho fica em um só lugar. -->
-    <svg
-      class="svg-sprite"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      <symbol id="i-arrow" viewBox="0 0 24 24">
-        <path d="M4 12h15m-6-6 6 6-6 6" />
-      </symbol>
-      <symbol id="i-arrow-up" viewBox="0 0 24 24">
-        <path d="M6 18 18 6M6 6h12v12" />
-      </symbol>
-      <symbol id="i-check" viewBox="0 0 24 24">
-        <path d="m5 12 4 4L19 6" />
-      </symbol>
-      <symbol id="i-shield" viewBox="0 0 24 24">
-        <path
-          d="M12 3 3.8 6.5v6c0 4.6 8.2 8.5 8.2 8.5s8.2-3.9 8.2-8.5v-6L12 3Z"
-        />
-        <path d="m8 12 2.5 2.5L16 9" />
-      </symbol>
-      <symbol id="i-car" viewBox="0 0 24 24">
-        <path
-          d="m5 8 2-4h10l2 4 2 3v7H3v-7l2-3Zm0 0h14M3 13h18M5 18v3m14-3v3M6 10.5h2m8 0h2"
-        />
-      </symbol>
-      <symbol id="i-bike" viewBox="0 0 24 24">
-        <circle cx="5" cy="16" r="4" />
-        <circle cx="19" cy="16" r="4" />
-        <path d="m5 16 5-8h5l4 8M8 5h4m-1 3 3 8H5m9-13h3l1 4" />
-      </symbol>
-      <symbol id="i-phone" viewBox="0 0 24 24">
-        <path
-          d="M5 3h4l2 5-3 2a15 15 0 0 0 6 6l2-3 5 2v4a2 2 0 0 1-2 2C10 21 3 14 3 5a2 2 0 0 1 2-2Z"
-        />
-      </symbol>
-      <symbol id="i-truck" viewBox="0 0 24 24">
-        <path d="M2 7h12v11H2V7Zm12 5h4l4 4v2h-8M6 7V4h5l4 5" />
-        <circle cx="6" cy="19" r="2" />
-        <circle cx="18" cy="19" r="2" />
-      </symbol>
-      <symbol id="i-pin" viewBox="0 0 24 24">
-        <path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 0 1 14 0Z" />
-        <circle cx="12" cy="10" r="2.5" />
-      </symbol>
-      <symbol id="i-lock" viewBox="0 0 24 24">
-        <rect x="5" y="10" width="14" height="11" rx="2" />
-        <path d="M8 10V6a4 4 0 0 1 8 0v4m-4 5v2" />
-      </symbol>
-      <symbol id="i-radar" viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="9" />
-        <circle cx="12" cy="12" r="5" />
-        <path d="m12 12 7-7" />
-        <circle cx="12" cy="12" r="1" />
-      </symbol>
-      <symbol id="i-people" viewBox="0 0 24 24">
-        <circle cx="9" cy="7" r="3" />
-        <path
-          d="M3 21v-4a6 6 0 0 1 12 0v4M16 4a3 3 0 0 1 0 6m2 4a5 5 0 0 1 3 5v2"
-        />
-      </symbol>
-      <symbol id="i-clock" viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="9" />
-        <path d="M12 6v6l4 2" />
-      </symbol>
-      <symbol id="i-plus" viewBox="0 0 24 24">
-        <path d="M12 5v14M5 12h14" />
-      </symbol>
-      <symbol id="i-close" viewBox="0 0 24 24">
-        <path d="m6 6 12 12M18 6 6 18" />
-      </symbol>
-      <symbol id="i-copy" viewBox="0 0 24 24">
-        <rect x="8" y="8" width="12" height="13" rx="2" />
-        <path d="M15 8V3H3v13h5" />
-      </symbol>
-      <symbol id="i-chevron" viewBox="0 0 24 24">
-        <path d="m6 9 6 6 6-6" />
-      </symbol>
-    </svg>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#092331" />
+  <meta name="description"
+    content="Siga seus caminhos com a Nova Proteção. Proteção veicular para carro e moto, assistência 24h, guincho, roubo e furto, perda total, terceiros e rastreador. Solicite uma cotação." />
+  <meta property="og:title" content="Nova Proteção — A vida segue. A gente protege." />
+  <meta property="og:description"
+    content="Proteção para seu carro ou sua moto. Mais tranquilidade para os caminhos que importam." />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="pt_BR" />
+  <meta property="og:image"
+    content="https://nova-protecao-na-estrada.nosso-super-chat.chatgpt.site/assets/images/estrada-nova.webp" />
+  <title>Nova Proteção — A vida segue. A gente protege.</title>
+  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml" />
+  <link rel="preload" href="assets/fonts/sora-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/images/estrada-nova.webp" as="image" fetchpriority="high" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="assets/vendor/motion.js" defer></script>
+  <script src="js/config.js" defer></script>
+  <script src="js/content.js" defer></script>
+  <script src="js/main.js" defer></script>
+</head>
 
-    <header class="site-header" id="inicio">
-      <div class="container header-inner">
-        <a class="brand" href="#inicio" aria-label="Nova Proteção — início"
-          ><img
-            src="assets/images/logo-nova.png"
-            alt="Nova Proteção Veicular"
-            width="1411"
-            height="430"
-        /></a>
-        <button
-          class="menu-toggle"
-          type="button"
-          aria-label="Abrir menu"
-          aria-controls="main-nav"
-          aria-expanded="false"
-        >
-          <span></span><span></span>
-        </button>
-        <nav class="main-nav" id="main-nav" aria-label="Navegação principal">
-          <a href="#protecao">Para seu veículo</a>
-          <a href="#coberturas">Proteções</a>
-          <a href="#assistencia">Assistência 24h</a>
-          <a href="#duvidas">Dúvidas</a>
-          <a class="button button-small button-light nav-cta" href="#cotacao"
-            >Fazer uma cotação <svg class="icon"><use href="#i-arrow-up" /></svg
-          ></a>
-        </nav>
-      </div>
-    </header>
+<body>
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
 
-    <main id="conteudo">
-      <!-- 1. Abertura: mensagem de marca e chamada principal. -->
-      <section class="hero" aria-labelledby="hero-title">
-        <img
-          class="hero-image"
-          src="assets/images/estrada-nova.webp"
-          alt="Carro e moto em uma estrada à beira do mar, cercada pela paisagem do litoral brasileiro"
-          width="1536"
-          height="1024"
-          fetchpriority="high"
-        />
-        <div class="hero-shade"></div>
-        <div class="container hero-content">
-          <div class="hero-copy">
-            <p class="hero-intro">
-              <span class="status-dot"></span> Seu caminho merece uma Nova
-              proteção.
-            </p>
-            <h1 id="hero-title">A vida segue.<br />A gente protege.</h1>
-            <p class="hero-description">
-              Do primeiro compromisso à próxima aventura.<br
-                class="desktop-break"
-              />
-              Proteção para seu carro ou moto, com a tranquilidade de ter com
-              quem contar.
-            </p>
-            <div class="hero-actions">
-              <a class="button button-primary" href="#cotacao"
-                >Quero proteger meu veículo
-                <svg class="icon"><use href="#i-arrow-up" /></svg
-              ></a>
-              <a class="text-link" href="#coberturas"
-                >Conhecer as proteções
-                <svg class="icon"><use href="#i-arrow" /></svg
-              ></a>
-            </div>
-            <p class="hero-note">
-              <svg class="icon"><use href="#i-check" /></svg> Para quem vive a
-              vida em movimento.
-            </p>
-          </div>
-          <div class="hero-caption" aria-hidden="true">
-            <span class="caption-line"></span
-            ><span
-              >Seu próximo destino?<br /><strong
-                >Seguir tranquilo.</strong
-              ></span
-            >
-          </div>
-        </div>
-        <a
-          class="scroll-cue"
-          href="#protecao"
-          aria-label="Explorar as proteções"
-          ><span>Tem muita vida pela frente</span
-          ><svg class="icon"><use href="#i-chevron" /></svg
-        ></a>
-      </section>
+  <!-- Ícones compartilhados: o desenho fica em um só lugar. -->
+  <svg class="svg-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="i-arrow" viewBox="0 0 24 24">
+      <path d="M4 12h15m-6-6 6 6-6 6" />
+    </symbol>
+    <symbol id="i-arrow-up" viewBox="0 0 24 24">
+      <path d="M6 18 18 6M6 6h12v12" />
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24">
+      <path d="m5 12 4 4L19 6" />
+    </symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24">
+      <path d="M12 3 3.8 6.5v6c0 4.6 8.2 8.5 8.2 8.5s8.2-3.9 8.2-8.5v-6L12 3Z" />
+      <path d="m8 12 2.5 2.5L16 9" />
+    </symbol>
+    <symbol id="i-car" viewBox="0 0 24 24">
+      <path d="m5 8 2-4h10l2 4 2 3v7H3v-7l2-3Zm0 0h14M3 13h18M5 18v3m14-3v3M6 10.5h2m8 0h2" />
+    </symbol>
+    <symbol id="i-bike" viewBox="0 0 24 24">
+      <circle cx="5" cy="16" r="4" />
+      <circle cx="19" cy="16" r="4" />
+      <path d="m5 16 5-8h5l4 8M8 5h4m-1 3 3 8H5m9-13h3l1 4" />
+    </symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24">
+      <path d="M5 3h4l2 5-3 2a15 15 0 0 0 6 6l2-3 5 2v4a2 2 0 0 1-2 2C10 21 3 14 3 5a2 2 0 0 1 2-2Z" />
+    </symbol>
+    <symbol id="i-truck" viewBox="0 0 24 24">
+      <path d="M2 7h12v11H2V7Zm12 5h4l4 4v2h-8M6 7V4h5l4 5" />
+      <circle cx="6" cy="19" r="2" />
+      <circle cx="18" cy="19" r="2" />
+    </symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24">
+      <path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 0 1 14 0Z" />
+      <circle cx="12" cy="10" r="2.5" />
+    </symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24">
+      <rect x="5" y="10" width="14" height="11" rx="2" />
+      <path d="M8 10V6a4 4 0 0 1 8 0v4m-4 5v2" />
+    </symbol>
+    <symbol id="i-radar" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="9" />
+      <circle cx="12" cy="12" r="5" />
+      <path d="m12 12 7-7" />
+      <circle cx="12" cy="12" r="1" />
+    </symbol>
+    <symbol id="i-people" viewBox="0 0 24 24">
+      <circle cx="9" cy="7" r="3" />
+      <path d="M3 21v-4a6 6 0 0 1 12 0v4M16 4a3 3 0 0 1 0 6m2 4a5 5 0 0 1 3 5v2" />
+    </symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 6v6l4 2" />
+    </symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24">
+      <path d="M12 5v14M5 12h14" />
+    </symbol>
+    <symbol id="i-close" viewBox="0 0 24 24">
+      <path d="m6 6 12 12M18 6 6 18" />
+    </symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24">
+      <rect x="8" y="8" width="12" height="13" rx="2" />
+      <path d="M15 8V3H3v13h5" />
+    </symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24">
+      <path d="m6 9 6 6 6-6" />
+    </symbol>
+  </svg>
 
-      <div class="service-strip">
-        <div class="container strip-inner">
-          <div>
-            <svg class="icon"><use href="#i-clock" /></svg>
-            <p>
-              <strong>Assistência 24h</strong
-              ><span>Apoio quando você precisa</span>
-            </p>
-          </div>
-          <div>
-            <svg class="icon"><use href="#i-car" /></svg>
-            <p>
-              <strong>Carro ou moto</strong
-              ><span>Proteção para o seu dia a dia</span>
-            </p>
-          </div>
-          <div>
-            <svg class="icon"><use href="#i-shield" /></svg>
-            <p>
-              <strong>Mais tranquilidade</strong
-              ><span>Para ir além dos imprevistos</span>
-            </p>
-          </div>
-        </div>
-      </div>
+  <header class="site-header" id="inicio">
+    <div class="container header-inner">
+      <a class="brand" href="#inicio" aria-label="Nova Proteção — início"><img src="assets/images/logo-nova.png"
+          alt="Nova Proteção Veicular" width="1411" height="430" /></a>
+      <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-controls="main-nav" aria-expanded="false">
+        <span></span><span></span>
+      </button>
+      <nav class="main-nav" id="main-nav" aria-label="Navegação principal">
+        <a href="#protecao">Para seu veículo</a>
+        <a href="#coberturas">Proteções</a>
+        <a href="#assistencia">Assistência 24h</a>
+        <a href="#duvidas">Dúvidas</a>
+        <a class="button button-small button-light nav-cta" href="#cotacao">Fazer uma cotação <svg class="icon">
+            <use href="#i-arrow-up" />
+          </svg></a>
+      </nav>
+    </div>
+  </header>
 
-      <!-- 2. Seletor de veículo. Conteúdo editável em js/content.js. -->
-      <section
-        class="section vehicle-section"
-        id="protecao"
-        aria-labelledby="vehicle-heading"
-      >
-        <div class="container">
-          <div class="section-heading vehicle-heading">
-            <h2 id="vehicle-heading">Cada caminho tem<br />sua proteção.</h2>
-            <p>
-              O carro que leva a família. A moto que faz o dia render.<br />
-              Escolha o seu e conheça a Nova.
-            </p>
+  <main id="conteudo">
+    <!-- 1. Abertura: mensagem de marca e chamada principal. -->
+    <section class="hero" aria-labelledby="hero-title">
+      <img class="hero-image" src="assets/images/estrada-nova.webp"
+        alt="Carro e moto em uma estrada à beira do mar, cercada pela paisagem do litoral brasileiro" width="1536"
+        height="1024" fetchpriority="high" />
+      <div class="hero-shade"></div>
+      <div class="container hero-content">
+        <div class="hero-copy">
+          <p class="hero-intro">
+            <span class="status-dot"></span> Seu caminho merece uma Nova
+            proteção.
+          </p>
+          <h1 id="hero-title">A vida segue.<br />A gente protege.</h1>
+          <p class="hero-description">
+            Do primeiro compromisso à próxima aventura.<br class="desktop-break" />
+            Proteção para seu carro ou moto, com a tranquilidade de ter com
+            quem contar.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#cotacao">Quero proteger meu veículo
+              <svg class="icon">
+                <use href="#i-arrow-up" />
+              </svg></a>
+            <a class="text-link" href="#coberturas">Conhecer as proteções
+              <svg class="icon">
+                <use href="#i-arrow" />
+              </svg></a>
           </div>
-          <div class="vehicle-tabs" role="tablist" aria-label="Tipo de veículo">
-            <button
-              id="tab-carro"
-              class="vehicle-tab is-active"
-              type="button"
-              role="tab"
-              aria-selected="true"
-              aria-controls="vehicle-panel"
-              data-vehicle="carro"
-            >
-              <svg class="icon"><use href="#i-car" /></svg> Para meu carro
-            </button>
-            <button
-              id="tab-moto"
-              class="vehicle-tab"
-              type="button"
-              role="tab"
-              aria-selected="false"
-              aria-controls="vehicle-panel"
-              tabindex="-1"
-              data-vehicle="moto"
-            >
-              <svg class="icon"><use href="#i-bike" /></svg> Para minha moto
-            </button>
-          </div>
-          <div
-            class="vehicle-panel"
-            id="vehicle-panel"
-            role="tabpanel"
-            aria-labelledby="tab-carro"
-            tabindex="0"
-          >
-            <div class="vehicle-copy">
-              <span class="icon-tile"
-                ><svg class="icon" id="vehicle-icon"><use href="#i-car" /></svg
-              ></span>
-              <h3 id="vehicle-title">A sua rotina.<br />Bem acompanhada.</h3>
-              <p id="vehicle-description">
-                Para o caminho do trabalho, a volta para casa e aquela viagem
-                que não sai dos planos. Seu carro protegido, você com mais
-                tranquilidade para seguir.
-              </p>
-              <ul class="check-list">
-                <li>
-                  <svg class="icon"><use href="#i-check" /></svg> Proteção
-                  contra roubo e furto
-                </li>
-                <li>
-                  <svg class="icon"><use href="#i-check" /></svg> Assistência
-                  24h e guincho
-                </li>
-                <li>
-                  <svg class="icon"><use href="#i-check" /></svg> Opções de
-                  proteção para terceiros
-                </li>
-              </ul>
-              <a
-                class="text-link dark-link"
-                id="vehicle-quote"
-                href="#cotacao"
-                data-quote-vehicle="carro"
-                >Proteger meu carro
-                <svg class="icon"><use href="#i-arrow-up" /></svg
-              ></a>
-            </div>
-            <div class="vehicle-photo">
-              <img
-                id="vehicle-image"
-                src="assets/images/estrada-nova.webp"
-                alt="Carro em uma estrada no litoral"
-                width="1536"
-                height="1024"
-                loading="lazy"
-              />
-              <div class="photo-label">
-                <svg class="icon"><use href="#i-pin" /></svg> A liberdade de
-                seguir em frente.
-              </div>
-            </div>
-          </div>
-          <p class="section-footnote">
-            Proteções, disponibilidade e limites conforme o plano e o
-            regulamento de adesão.
+          <p class="hero-note">
+            <svg class="icon">
+              <use href="#i-check" />
+            </svg> Para quem vive a
+            vida em movimento.
           </p>
         </div>
-      </section>
-
-      <!-- 3. Proteções: controles acessíveis e painel de detalhes. -->
-      <section
-        class="section coverage-section"
-        id="coberturas"
-        aria-labelledby="coverage-heading"
-      >
-        <div class="container">
-          <div class="section-heading">
-            <h2 id="coverage-heading">
-              Você cuida dos planos.<br />A gente, dos imprevistos.
-            </h2>
-            <p>
-              Entenda o que pode fazer parte da sua proteção.<br />
-              Sem complicar o que precisa ser simples.
-            </p>
-          </div>
-          <div class="coverage-layout">
-            <div class="coverage-options" aria-label="Escolha uma proteção">
-              <button
-                class="coverage-option is-active"
-                type="button"
-                data-coverage="roubo"
-                aria-pressed="true"
-                aria-controls="coverage-detail"
-              >
-                <span class="coverage-label"
-                  ><svg class="icon"><use href="#i-lock" /></svg
-                  ><span>Roubo e furto</span></span
-                ><svg class="icon option-arrow"><use href="#i-arrow-up" /></svg>
-              </button>
-              <button
-                class="coverage-option"
-                type="button"
-                data-coverage="perda"
-                aria-pressed="false"
-                aria-controls="coverage-detail"
-              >
-                <span class="coverage-label"
-                  ><svg class="icon"><use href="#i-shield" /></svg
-                  ><span>Perda total</span></span
-                ><svg class="icon option-arrow"><use href="#i-arrow-up" /></svg>
-              </button>
-              <button
-                class="coverage-option"
-                type="button"
-                data-coverage="terceiros"
-                aria-pressed="false"
-                aria-controls="coverage-detail"
-              >
-                <span class="coverage-label"
-                  ><svg class="icon"><use href="#i-people" /></svg
-                  ><span>Proteção para terceiros</span></span
-                ><svg class="icon option-arrow"><use href="#i-arrow-up" /></svg>
-              </button>
-              <button
-                class="coverage-option"
-                type="button"
-                data-coverage="rastreador"
-                aria-pressed="false"
-                aria-controls="coverage-detail"
-              >
-                <span class="coverage-label"
-                  ><svg class="icon"><use href="#i-radar" /></svg
-                  ><span>Rastreador</span></span
-                ><svg class="icon option-arrow"><use href="#i-arrow-up" /></svg>
-              </button>
-            </div>
-            <div
-              class="coverage-detail"
-              id="coverage-detail"
-              aria-live="polite"
-              aria-atomic="true"
-            >
-              <div class="protection-visual" aria-hidden="true">
-                <span class="orbit orbit-one"></span
-                ><span class="orbit orbit-two"></span
-                ><span class="orbit-dot dot-one"></span
-                ><span class="orbit-dot dot-two"></span>
-                <div class="shield-center">
-                  <svg class="icon" id="coverage-icon">
-                    <use href="#i-lock" />
-                  </svg>
-                </div>
-                <span class="visual-tag"
-                  ><span class="status-dot"></span> Com a Nova, você
-                  segue.</span
-                >
-              </div>
-              <div class="coverage-detail-copy">
-                <h3 id="coverage-title">Seu patrimônio merece cuidado.</h3>
-                <p id="coverage-description">
-                  Proteção para o seu veículo em situações de roubo ou furto.
-                  Conheça as condições do plano e tenha clareza sobre o apoio
-                  com que pode contar.
-                </p>
-                <a class="text-link dark-link" href="#cotacao"
-                  >Incluir na minha cotação
-                  <svg class="icon"><use href="#i-arrow" /></svg
-                ></a>
-              </div>
-            </div>
-          </div>
+        <div class="hero-caption" aria-hidden="true">
+          <span class="caption-line"></span><span>Seu próximo destino?<br /><strong>Seguir tranquilo.</strong></span>
         </div>
-      </section>
+      </div>
+      <a class="scroll-cue" href="#protecao" aria-label="Explorar as proteções"><span>Tem muita vida pela
+          frente</span><svg class="icon">
+          <use href="#i-chevron" />
+        </svg></a>
+    </section>
 
-      <!-- 4. Assistência. Não exibimos telefones ou prazos não informados. -->
-      <section
-        class="assistance-section"
-        id="assistencia"
-        aria-labelledby="assistance-heading"
-      >
-        <div class="container assistance-layout">
-          <div class="assistance-copy">
-            <span class="assistance-label"
-              ><svg class="icon"><use href="#i-phone" /></svg> Assistência 24
-              horas</span
-            >
-            <h2 id="assistance-heading">
-              Imprevisto não<br />marca hora.<br />A gente sabe.
-            </h2>
-            <p>
-              O veículo parou? Ter apoio faz toda a diferença.<br />Conte com
-              assistência 24h e serviço de guincho, conforme as condições da sua
-              proteção.
-            </p>
-            <a class="button button-primary" href="#cotacao"
-              >Quero contar com a Nova
-              <svg class="icon"><use href="#i-arrow-up" /></svg
-            ></a>
-          </div>
-          <div class="assistance-visual">
-            <div class="hours-mark">
-              <span>24</span
-              ><span class="hours-unit"
-                >h<svg class="icon"><use href="#i-arrow-up" /></svg
-              ></span>
-            </div>
-            <div class="assistance-route" aria-hidden="true">
-              <svg viewBox="0 0 480 150">
-                <path
-                  class="route-shadow"
-                  d="M0 110h120c80 0 40-80 120-80h240"
-                />
-                <path
-                  class="route-dash"
-                  d="M0 110h120c80 0 40-80 120-80h240"
-                /></svg
-              ><span class="route-truck"
-                ><svg class="icon"><use href="#i-truck" /></svg></span
-              ><span class="route-pin"
-                ><svg class="icon"><use href="#i-pin" /></svg
-              ></span>
-            </div>
-            <div class="assistance-caption">
-              <strong>Quando o caminho muda,<br />o cuidado continua.</strong
-              ><span>Assistência e guincho</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 5. Jornada e cotação: informações honestas, sem envio fictício. -->
-      <section
-        class="section quote-section"
-        id="cotacao"
-        aria-labelledby="quote-heading"
-      >
-        <div class="container quote-layout">
-          <div class="quote-copy">
-            <h2 id="quote-heading">Seu próximo passo<br />é mais tranquilo.</h2>
-            <p>
-              Conte um pouco sobre seu veículo.<br />Vamos começar pela proteção
-              que faz sentido para você.
-            </p>
-            <ol class="steps">
-              <li>
-                <span class="step-number">1</span>
-                <div>
-                  <h3>Você conta o que precisa</h3>
-                  <p>Carro ou moto, modelo e sua cidade.</p>
-                </div>
-              </li>
-              <li>
-                <span class="step-number">2</span>
-                <div>
-                  <h3>Conhece as possibilidades</h3>
-                  <p>Solicite os valores e as condições de proteção.</p>
-                </div>
-              </li>
-              <li>
-                <span class="step-number">3</span>
-                <div>
-                  <h3>Escolhe com tranquilidade</h3>
-                  <p>Confira os detalhes antes de aderir.</p>
-                </div>
-              </li>
-            </ol>
-            <div class="quote-signature">
-              <svg class="icon"><use href="#i-shield" /></svg>
-              <p>O seu caminho.<br /><strong>A nossa parceria.</strong></p>
-            </div>
-          </div>
-          <form class="quote-form" id="quote-form" novalidate>
-            <div class="form-title">
-              <h3>Vamos proteger<br />o que move você?</h3>
-              <svg class="icon"><use href="#i-arrow-up" /></svg>
-            </div>
-            <p class="form-subtitle">Prepare seu pedido de cotação.</p>
-            <div
-              class="form-errors"
-              id="form-errors"
-              role="alert"
-              tabindex="-1"
-              hidden
-            ></div>
-            <fieldset class="vehicle-choice">
-              <legend>Qual é o seu veículo?</legend>
-              <label
-                ><input
-                  type="radio"
-                  name="vehicle"
-                  value="carro"
-                  checked
-                /><span
-                  ><svg class="icon"><use href="#i-car" /></svg> Carro</span
-                ></label
-              ><label
-                ><input type="radio" name="vehicle" value="moto" /><span
-                  ><svg class="icon"><use href="#i-bike" /></svg> Moto</span
-                ></label
-              >
-            </fieldset>
-            <div class="form-field">
-              <label for="name">Seu nome</label
-              ><input
-                id="name"
-                name="name"
-                type="text"
-                placeholder="Como podemos chamar você?"
-                autocomplete="given-name"
-                maxlength="80"
-                required
-                aria-describedby="name-error"
-              /><span class="field-error" id="name-error"></span>
-            </div>
-            <div class="form-field">
-              <label for="model">Modelo e ano do veículo</label
-              ><input
-                id="model"
-                name="model"
-                type="text"
-                placeholder="Ex.: Onix 2022"
-                maxlength="100"
-                required
-                aria-describedby="model-error"
-              /><span class="field-error" id="model-error"></span>
-            </div>
-            <div class="form-field">
-              <label for="city">Cidade e estado</label
-              ><input
-                id="city"
-                name="city"
-                type="text"
-                placeholder="Ex.: Maceió, AL"
-                autocomplete="address-level2"
-                maxlength="100"
-                required
-                aria-describedby="city-error"
-              /><span class="field-error" id="city-error"></span>
-            </div>
-            <button class="button button-primary form-submit" type="submit" disabled>
-              Preparar minha cotação
-              <svg class="icon"><use href="#i-arrow-up" /></svg>
-            </button>
-            <p class="form-privacy">
-              <svg class="icon"><use href="#i-lock" /></svg
-              ><span
-                >Você revisa o pedido antes de enviar.<br />Seus dados não são
-                salvos nesta página.</span
-              >
-            </p>
-            <noscript
-              ><p>
-                Ative o JavaScript para preparar e copiar seu pedido de cotação.
-              </p></noscript
-            >
-          </form>
-        </div>
-      </section>
-
-      <!-- 6. Perguntas frequentes com comportamento nativo do navegador. -->
-      <section
-        class="section faq-section"
-        id="duvidas"
-        aria-labelledby="faq-heading"
-      >
-        <div class="container faq-layout">
-          <div>
-            <span class="section-kicker">Vamos deixar tudo claro.</span>
-            <h2 id="faq-heading">Antes de seguir,<br />tire suas dúvidas.</h2>
-            <p>Proteção também é entender<br />com o que você pode contar.</p>
-          </div>
-          <div class="faq-list">
-            <details>
-              <summary>
-                Posso proteger meu carro e minha moto?<svg class="icon">
-                  <use href="#i-plus" />
-                </svg>
-              </summary>
-              <div class="faq-answer">
-                <p>
-                  A Nova trabalha com proteção veicular para carros e motos.
-                  Solicite uma cotação para cada veículo e consulte os critérios
-                  de aceitação e as condições disponíveis.
-                </p>
-              </div>
-            </details>
-            <details>
-              <summary>
-                Quais proteções posso contratar?<svg class="icon">
-                  <use href="#i-plus" />
-                </svg>
-              </summary>
-              <div class="faq-answer">
-                <p>
-                  Você pode consultar opções de proteção contra roubo e furto,
-                  perda total, terceiros, rastreador e assistência 24h com
-                  guincho. A composição, os limites e a disponibilidade devem
-                  ser confirmados na proposta e no regulamento.
-                </p>
-              </div>
-            </details>
-            <details>
-              <summary>
-                Como funciona a assistência 24 horas?<svg class="icon">
-                  <use href="#i-plus" />
-                </svg>
-              </summary>
-              <div class="faq-answer">
-                <p>
-                  A assistência oferece um canal de apoio 24h para os
-                  imprevistos previstos na sua proteção. Antes da adesão,
-                  confira os serviços incluídos, os limites de guincho e as
-                  orientações para acionamento.
-                </p>
-              </div>
-            </details>
-            <details>
-              <summary>
-                Como descubro o valor para meu veículo?<svg class="icon">
-                  <use href="#i-plus" />
-                </svg>
-              </summary>
-              <div class="faq-answer">
-                <p>
-                  Preencha seu modelo, ano e cidade no formulário de cotação. O
-                  pedido reúne essas informações para você consultar a equipe da
-                  Nova sobre valores e condições para seu veículo.
-                </p>
-              </div>
-            </details>
-            <details>
-              <summary>
-                O rastreador está incluído na proteção?<svg class="icon">
-                  <use href="#i-plus" />
-                </svg>
-              </summary>
-              <div class="faq-answer">
-                <p>
-                  A disponibilidade do rastreador e as condições de instalação
-                  dependem do veículo e do plano. Inclua essa dúvida no seu
-                  pedido de cotação para confirmar os detalhes com a equipe.
-                </p>
-              </div>
-            </details>
-          </div>
-        </div>
-      </section>
-
-      <section class="closing-section" aria-label="Comece sua cotação">
-        <div class="container closing-inner">
-          <h2>Tem muita vida<br />esperando por você.</h2>
-          <a class="button button-white" href="#cotacao"
-            >Siga com a Nova <svg class="icon"><use href="#i-arrow-up" /></svg
-          ></a>
-        </div>
-        <div class="closing-road" aria-hidden="true"></div>
-      </section>
-    </main>
-
-    <footer class="site-footer">
-      <div class="container">
-        <div class="footer-top">
-          <a
-            class="brand footer-brand"
-            href="#inicio"
-            aria-label="Nova Proteção — voltar ao início"
-            ><img
-              src="assets/images/logo-nova.png"
-              alt="Nova Proteção Veicular"
-              width="1411"
-              height="430"
-              loading="lazy"
-          /></a>
+    <div class="service-strip">
+      <div class="container strip-inner">
+        <div>
+          <svg class="icon">
+            <use href="#i-clock" />
+          </svg>
           <p>
-            Mais que proteger um veículo.<br />Cuidar dos caminhos que ele leva
-            você.
+            <strong>Assistência 24h</strong><span>Apoio quando você precisa</span>
           </p>
-          <a class="text-link" href="#cotacao"
-            >Fale com a Nova <svg class="icon"><use href="#i-arrow-up" /></svg
-          ></a>
         </div>
-        <div class="footer-bottom">
-          <p>© <span id="current-year">2026</span> Nova Proteção Veicular.</p>
-          <button class="privacy-link" type="button" data-open-privacy>
-            Privacidade</button
-          ><a href="#inicio">Voltar ao topo ↑</a>
+        <div>
+          <svg class="icon">
+            <use href="#i-car" />
+          </svg>
+          <p>
+            <strong>Carro ou moto</strong><span>Proteção para o seu dia a dia</span>
+          </p>
         </div>
-        <p class="footer-disclaimer">
-          As proteções e os serviços apresentados estão sujeitos às condições, à
-          disponibilidade e aos limites do plano e do regulamento de adesão.
-          Consulte os detalhes na sua cotação. Imagens ilustrativas.
+        <div>
+          <svg class="icon">
+            <use href="#i-shield" />
+          </svg>
+          <p>
+            <strong>Mais tranquilidade</strong><span>Para ir além dos imprevistos</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Seletor de veículo. Conteúdo editável em js/content.js. -->
+    <section class="section vehicle-section" id="protecao" aria-labelledby="vehicle-heading">
+      <div class="container">
+        <div class="section-heading vehicle-heading">
+          <h2 id="vehicle-heading">Cada caminho tem<br />sua proteção.</h2>
+          <p>
+            O carro que leva a família. A moto que faz o dia render.<br />
+            Escolha o seu e conheça a Nova.
+          </p>
+        </div>
+        <div class="vehicle-tabs" role="tablist" aria-label="Tipo de veículo">
+          <button id="tab-carro" class="vehicle-tab is-active" type="button" role="tab" aria-selected="true"
+            aria-controls="vehicle-panel" data-vehicle="carro">
+            <svg class="icon">
+              <use href="#i-car" />
+            </svg> Para meu carro
+          </button>
+          <button id="tab-moto" class="vehicle-tab" type="button" role="tab" aria-selected="false"
+            aria-controls="vehicle-panel" tabindex="-1" data-vehicle="moto">
+            <svg class="icon">
+              <use href="#i-bike" />
+            </svg> Para minha moto
+          </button>
+        </div>
+        <div class="vehicle-panel" id="vehicle-panel" role="tabpanel" aria-labelledby="tab-carro" tabindex="0">
+          <div class="vehicle-copy">
+            <span class="icon-tile"><svg class="icon" id="vehicle-icon">
+                <use href="#i-car" />
+              </svg></span>
+            <h3 id="vehicle-title">A sua rotina.<br />Bem acompanhada.</h3>
+            <p id="vehicle-description">
+              Para o caminho do trabalho, a volta para casa e aquela viagem
+              que não sai dos planos. Seu carro protegido, você com mais
+              tranquilidade para seguir.
+            </p>
+            <ul class="check-list">
+              <li>
+                <svg class="icon">
+                  <use href="#i-check" />
+                </svg> Proteção
+                contra roubo e furto
+              </li>
+              <li>
+                <svg class="icon">
+                  <use href="#i-check" />
+                </svg> Assistência
+                24h e guincho
+              </li>
+              <li>
+                <svg class="icon">
+                  <use href="#i-check" />
+                </svg> Opções de
+                proteção para terceiros
+              </li>
+            </ul>
+            <a class="text-link dark-link" id="vehicle-quote" href="#cotacao" data-quote-vehicle="carro">Proteger meu
+              carro
+              <svg class="icon">
+                <use href="#i-arrow-up" />
+              </svg></a>
+          </div>
+          <div class="vehicle-photo">
+            <img id="vehicle-image" src="assets/images/estrada-nova.webp" alt="Carro em uma estrada no litoral"
+              width="1536" height="1024" loading="lazy" />
+            <div class="photo-label">
+              <svg class="icon">
+                <use href="#i-pin" />
+              </svg> A liberdade de
+              seguir em frente.
+            </div>
+          </div>
+        </div>
+        <p class="section-footnote">
+          Proteções, disponibilidade e limites conforme o plano e o
+          regulamento de adesão.
         </p>
       </div>
-    </footer>
+    </section>
 
-    <!-- Diálogos: sem dados persistidos e com foco controlado pelo navegador. -->
-    <dialog
-      class="site-dialog quote-dialog"
-      id="quote-dialog"
-      aria-labelledby="quote-dialog-title"
-    >
-      <button
-        class="dialog-close"
-        type="button"
-        data-close-dialog
-        aria-label="Fechar pedido"
-      >
-        <svg class="icon"><use href="#i-close" /></svg></button
-      ><span class="icon-tile"
-        ><svg class="icon"><use href="#i-check" /></svg
-      ></span>
-      <h2 id="quote-dialog-title">Seu pedido está pronto.</h2>
-      <p>Confira as informações antes de continuar.</p>
-      <textarea
-        class="quote-summary"
-        id="quote-summary"
-        aria-label="Mensagem do pedido de cotação"
-        rows="8"
-        readonly
-      ></textarea>
-      <p class="contact-status" id="contact-status"></p>
-      <div class="dialog-actions">
-        <a
-          class="button button-primary"
-          id="whatsapp-send"
-          target="_blank"
-          rel="noopener noreferrer"
-          hidden
-          >Continuar no WhatsApp
-          <svg class="icon"><use href="#i-arrow-up" /></svg></a
-        ><button class="button button-dark" id="copy-quote" type="button">
-          Copiar pedido <svg class="icon"><use href="#i-copy" /></svg></button
-        ><button class="text-button" id="download-quote" type="button">
-          Baixar pedido em texto
-        </button>
+    <!-- 3. Proteções: controles acessíveis e painel de detalhes. -->
+    <section class="section coverage-section" id="coberturas" aria-labelledby="coverage-heading">
+      <div class="container">
+        <div class="section-heading">
+          <h2 id="coverage-heading">
+            Você cuida dos planos.<br />A gente, dos imprevistos.
+          </h2>
+          <p>
+            Entenda o que pode fazer parte da sua proteção.<br />
+            Sem complicar o que precisa ser simples.
+          </p>
+        </div>
+        <div class="coverage-layout">
+          <div class="coverage-options" aria-label="Escolha uma proteção">
+            <button class="coverage-option is-active" type="button" data-coverage="roubo" aria-pressed="true"
+              aria-controls="coverage-detail">
+              <span class="coverage-label"><svg class="icon">
+                  <use href="#i-lock" />
+                </svg><span>Roubo e furto</span></span><svg class="icon option-arrow">
+                <use href="#i-arrow-up" />
+              </svg>
+            </button>
+            <button class="coverage-option" type="button" data-coverage="perda" aria-pressed="false"
+              aria-controls="coverage-detail">
+              <span class="coverage-label"><svg class="icon">
+                  <use href="#i-shield" />
+                </svg><span>Perda total</span></span><svg class="icon option-arrow">
+                <use href="#i-arrow-up" />
+              </svg>
+            </button>
+            <button class="coverage-option" type="button" data-coverage="terceiros" aria-pressed="false"
+              aria-controls="coverage-detail">
+              <span class="coverage-label"><svg class="icon">
+                  <use href="#i-people" />
+                </svg><span>Proteção para terceiros</span></span><svg class="icon option-arrow">
+                <use href="#i-arrow-up" />
+              </svg>
+            </button>
+            <button class="coverage-option" type="button" data-coverage="rastreador" aria-pressed="false"
+              aria-controls="coverage-detail">
+              <span class="coverage-label"><svg class="icon">
+                  <use href="#i-radar" />
+                </svg><span>Rastreador</span></span><svg class="icon option-arrow">
+                <use href="#i-arrow-up" />
+              </svg>
+            </button>
+          </div>
+          <div class="coverage-detail" id="coverage-detail" aria-live="polite" aria-atomic="true">
+            <div class="protection-visual" aria-hidden="true">
+              <span class="orbit orbit-one"></span><span class="orbit orbit-two"></span><span
+                class="orbit-dot dot-one"></span><span class="orbit-dot dot-two"></span>
+              <div class="shield-center">
+                <svg class="icon" id="coverage-icon">
+                  <use href="#i-lock" />
+                </svg>
+              </div>
+              <span class="visual-tag"><span class="status-dot"></span> Com a Nova, você
+                segue.</span>
+            </div>
+            <div class="coverage-detail-copy">
+              <h3 id="coverage-title">Seu patrimônio merece cuidado.</h3>
+              <p id="coverage-description">
+                Proteção para o seu veículo em situações de roubo ou furto.
+                Conheça as condições do plano e tenha clareza sobre o apoio
+                com que pode contar.
+              </p>
+              <a class="text-link dark-link" href="#cotacao">Incluir na minha cotação
+                <svg class="icon">
+                  <use href="#i-arrow" />
+                </svg></a>
+            </div>
+          </div>
+        </div>
       </div>
-      <p class="copy-status" id="copy-status" role="status"></p>
-    </dialog>
-    <dialog
-      class="site-dialog privacy-dialog"
-      id="privacy-dialog"
-      aria-labelledby="privacy-title"
-    >
-      <button
-        class="dialog-close"
-        type="button"
-        data-close-dialog
-        aria-label="Fechar informações de privacidade"
-      >
-        <svg class="icon"><use href="#i-close" /></svg>
+    </section>
+
+    <!-- 4. Assistência. Não exibimos telefones ou prazos não informados. -->
+    <section class="assistance-section" id="assistencia" aria-labelledby="assistance-heading">
+      <div class="container assistance-layout">
+        <div class="assistance-copy">
+          <span class="assistance-label"><svg class="icon">
+              <use href="#i-phone" />
+            </svg> Assistência 24
+            horas</span>
+          <h2 id="assistance-heading">
+            Imprevisto não<br />marca hora.<br />A gente sabe.
+          </h2>
+          <p>
+            O veículo parou? Ter apoio faz toda a diferença.<br />Conte com
+            assistência 24h e serviço de guincho, conforme as condições da sua
+            proteção.
+          </p>
+          <a class="button button-primary" href="#cotacao">Quero contar com a Nova
+            <svg class="icon">
+              <use href="#i-arrow-up" />
+            </svg></a>
+        </div>
+        <div class="assistance-visual">
+          <div class="hours-mark">
+            <span>24</span><span class="hours-unit">h<svg class="icon">
+                <use href="#i-arrow-up" />
+              </svg></span>
+          </div>
+          <div class="assistance-route" aria-hidden="true">
+            <svg viewBox="0 0 480 150">
+              <path class="route-shadow" d="M0 110h120c80 0 40-80 120-80h240" />
+              <path class="route-dash" d="M0 110h120c80 0 40-80 120-80h240" />
+            </svg><span class="route-truck"><svg class="icon">
+                <use href="#i-truck" />
+              </svg></span><span class="route-pin"><svg class="icon">
+                <use href="#i-pin" />
+              </svg></span>
+          </div>
+          <div class="assistance-caption">
+            <strong>Quando o caminho muda,<br />o cuidado continua.</strong><span>Assistência e guincho</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Jornada e cotação: informações honestas, sem envio fictício. -->
+    <section class="section quote-section" id="cotacao" aria-labelledby="quote-heading">
+      <div class="container quote-layout">
+        <div class="quote-copy">
+          <h2 id="quote-heading">Seu próximo passo<br />é mais tranquilo.</h2>
+          <p>
+            Conte um pouco sobre seu veículo.<br />Vamos começar pela proteção
+            que faz sentido para você.
+          </p>
+          <ol class="steps">
+            <li>
+              <span class="step-number">1</span>
+              <div>
+                <h3>Você conta o que precisa</h3>
+                <p>Carro ou moto, modelo e sua cidade.</p>
+              </div>
+            </li>
+            <li>
+              <span class="step-number">2</span>
+              <div>
+                <h3>Conhece as possibilidades</h3>
+                <p>Solicite os valores e as condições de proteção.</p>
+              </div>
+            </li>
+            <li>
+              <span class="step-number">3</span>
+              <div>
+                <h3>Escolhe com tranquilidade</h3>
+                <p>Confira os detalhes antes de aderir.</p>
+              </div>
+            </li>
+          </ol>
+          <div class="quote-signature">
+            <svg class="icon">
+              <use href="#i-shield" />
+            </svg>
+            <p>O seu caminho.<br /><strong>A nossa parceria.</strong></p>
+          </div>
+        </div>
+        <form class="quote-form" id="quote-form" novalidate>
+          <div class="form-title">
+            <h3>Vamos proteger<br />o que move você?</h3>
+            <svg class="icon">
+              <use href="#i-arrow-up" />
+            </svg>
+          </div>
+          <p class="form-subtitle">Prepare seu pedido de cotação.</p>
+          <div class="form-errors" id="form-errors" role="alert" tabindex="-1" hidden></div>
+          <fieldset class="vehicle-choice">
+            <legend>Qual é o seu veículo?</legend>
+            <label><input type="radio" name="vehicle" value="carro" checked /><span><svg class="icon">
+                  <use href="#i-car" />
+                </svg> Carro</span></label><label><input type="radio" name="vehicle" value="moto" /><span><svg
+                  class="icon">
+                  <use href="#i-bike" />
+                </svg> Moto</span></label>
+          </fieldset>
+          <div class="form-field">
+            <label for="name">Seu nome</label><input id="name" name="name" type="text"
+              placeholder="Como podemos chamar você?" autocomplete="given-name" maxlength="80" required
+              aria-describedby="name-error" /><span class="field-error" id="name-error"></span>
+          </div>
+          <div class="form-field">
+            <label for="model">Modelo e ano do veículo</label><input id="model" name="model" type="text"
+              placeholder="Ex.: Onix 2022" maxlength="100" required aria-describedby="model-error" /><span
+              class="field-error" id="model-error"></span>
+          </div>
+          <div class="form-field">
+            <label for="city">Cidade e estado</label><input id="city" name="city" type="text"
+              placeholder="Ex.: Maceió, AL" autocomplete="address-level2" maxlength="100" required
+              aria-describedby="city-error" /><span class="field-error" id="city-error"></span>
+          </div>
+          <button class="button button-primary form-submit" type="submit" disabled>
+            Preparar minha cotação
+            <svg class="icon">
+              <use href="#i-arrow-up" />
+            </svg>
+          </button>
+          <p class="form-privacy">
+            <svg class="icon">
+              <use href="#i-lock" />
+            </svg><span>Você revisa o pedido antes de enviar.<br />Seus dados não são
+              salvos nesta página.</span>
+          </p>
+          <noscript>
+            <p>
+              Ative o JavaScript para preparar e copiar seu pedido de cotação.
+            </p>
+          </noscript>
+        </form>
+      </div>
+    </section>
+
+    <!-- 6. Perguntas frequentes com comportamento nativo do navegador. -->
+    <section class="section faq-section" id="duvidas" aria-labelledby="faq-heading">
+      <div class="container faq-layout">
+        <div>
+          <span class="section-kicker">Vamos deixar tudo claro.</span>
+          <h2 id="faq-heading">Antes de seguir,<br />tire suas dúvidas.</h2>
+          <p>Proteção também é entender<br />com o que você pode contar.</p>
+        </div>
+        <div class="faq-list">
+          <details>
+            <summary>
+              Posso proteger meu carro e minha moto?<svg class="icon">
+                <use href="#i-plus" />
+              </svg>
+            </summary>
+            <div class="faq-answer">
+              <p>
+                A Nova trabalha com proteção veicular para carros e motos.
+                Solicite uma cotação para cada veículo e consulte os critérios
+                de aceitação e as condições disponíveis.
+              </p>
+            </div>
+          </details>
+          <details>
+            <summary>
+              Quais proteções posso contratar?<svg class="icon">
+                <use href="#i-plus" />
+              </svg>
+            </summary>
+            <div class="faq-answer">
+              <p>
+                Você pode consultar opções de proteção contra roubo e furto,
+                perda total, terceiros, rastreador e assistência 24h com
+                guincho. A composição, os limites e a disponibilidade devem
+                ser confirmados na proposta e no regulamento.
+              </p>
+            </div>
+          </details>
+          <details>
+            <summary>
+              Como funciona a assistência 24 horas?<svg class="icon">
+                <use href="#i-plus" />
+              </svg>
+            </summary>
+            <div class="faq-answer">
+              <p>
+                A assistência oferece um canal de apoio 24h para os
+                imprevistos previstos na sua proteção. Antes da adesão,
+                confira os serviços incluídos, os limites de guincho e as
+                orientações para acionamento.
+              </p>
+            </div>
+          </details>
+          <details>
+            <summary>
+              Como descubro o valor para meu veículo?<svg class="icon">
+                <use href="#i-plus" />
+              </svg>
+            </summary>
+            <div class="faq-answer">
+              <p>
+                Preencha seu modelo, ano e cidade no formulário de cotação. O
+                pedido reúne essas informações para você consultar a equipe da
+                Nova sobre valores e condições para seu veículo.
+              </p>
+            </div>
+          </details>
+          <details>
+            <summary>
+              O rastreador está incluído na proteção?<svg class="icon">
+                <use href="#i-plus" />
+              </svg>
+            </summary>
+            <div class="faq-answer">
+              <p>
+                A disponibilidade do rastreador e as condições de instalação
+                dependem do veículo e do plano. Inclua essa dúvida no seu
+                pedido de cotação para confirmar os detalhes com a equipe.
+              </p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing-section" aria-label="Comece sua cotação">
+      <div class="container closing-inner">
+        <h2>Tem muita vida<br />esperando por você.</h2>
+        <a class="button button-white" href="#cotacao">Siga com a Nova <svg class="icon">
+            <use href="#i-arrow-up" />
+          </svg></a>
+      </div>
+      <div class="closing-road" aria-hidden="true"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <a class="brand footer-brand" href="#inicio" aria-label="Nova Proteção — voltar ao início"><img
+            src="assets/images/logo-nova.png" alt="Nova Proteção Veicular" width="1411" height="430"
+            loading="lazy" /></a>
+        <p>
+          Mais que proteger um veículo.<br />Cuidar dos caminhos que ele leva
+          você.
+        </p>
+        <a class="text-link" href="#cotacao">Fale com a Nova <svg class="icon">
+            <use href="#i-arrow-up" />
+          </svg></a>
+      </div>
+      <div class="footer-bottom">
+        <p>© <span id="current-year">2026</span> Nova Proteção Veicular.</p>
+        <button class="privacy-link" type="button" data-open-privacy>
+          Privacidade</button><a href="#inicio">Voltar ao topo ↑</a>
+      </div>
+      <p class="footer-disclaimer">
+        As proteções e os serviços apresentados estão sujeitos às condições, à
+        disponibilidade e aos limites do plano e do regulamento de adesão.
+        Consulte os detalhes na sua cotação. Imagens ilustrativas.
+      </p>
+    </div>
+  </footer>
+
+  <!-- Diálogos: sem dados persistidos e com foco controlado pelo navegador. -->
+  <dialog class="site-dialog quote-dialog" id="quote-dialog" aria-labelledby="quote-dialog-title">
+    <button class="dialog-close" type="button" data-close-dialog aria-label="Fechar pedido">
+      <svg class="icon">
+        <use href="#i-close" />
+      </svg></button><span class="icon-tile"><svg class="icon">
+        <use href="#i-check" />
+      </svg></span>
+    <h2 id="quote-dialog-title">Seu pedido está pronto.</h2>
+    <p>Confira as informações antes de continuar.</p>
+    <textarea class="quote-summary" id="quote-summary" aria-label="Mensagem do pedido de cotação" rows="8"
+      readonly></textarea>
+    <p class="contact-status" id="contact-status"></p>
+    <div class="dialog-actions">
+      <a class="button button-primary" id="whatsapp-send" target="_blank" rel="noopener noreferrer" hidden>Continuar no
+        WhatsApp
+        <svg class="icon">
+          <use href="#i-arrow-up" />
+        </svg></a><button class="button button-dark" id="copy-quote" type="button">
+        Copiar pedido <svg class="icon">
+          <use href="#i-copy" />
+        </svg></button><button class="text-button" id="download-quote" type="button">
+        Baixar pedido em texto
       </button>
-      <h2 id="privacy-title">Sua privacidade.</h2>
-      <p>
-        O formulário monta uma mensagem no seu navegador. As informações
-        preenchidas não são enviadas automaticamente nem armazenadas por esta
-        página.
-      </p>
-      <p>
-        Ao copiar ou baixar o pedido, você escolhe como compartilhá-lo. Quando o
-        canal de WhatsApp estiver disponível, você poderá revisar a mensagem
-        antes de enviá-la; o serviço seguirá as políticas de privacidade do
-        WhatsApp.
-      </p>
-      <p>
-        Esta página não utiliza ferramentas de análise, publicidade ou cookies
-        próprios. A plataforma de hospedagem pode tratar dados técnicos
-        necessários para disponibilizar o site.
-      </p>
-      <button class="button button-dark" type="button" data-close-dialog>
-        Entendi <svg class="icon"><use href="#i-check" /></svg>
-      </button>
-    </dialog>
-  </body>
+    </div>
+    <p class="copy-status" id="copy-status" role="status"></p>
+  </dialog>
+  <dialog class="site-dialog privacy-dialog" id="privacy-dialog" aria-labelledby="privacy-title">
+    <button class="dialog-close" type="button" data-close-dialog aria-label="Fechar informações de privacidade">
+      <svg class="icon">
+        <use href="#i-close" />
+      </svg>
+    </button>
+    <h2 id="privacy-title">Sua privacidade.</h2>
+    <p>
+      O formulário monta uma mensagem no seu navegador. As informações
+      preenchidas não são enviadas automaticamente nem armazenadas por esta
+      página.
+    </p>
+    <p>
+      Ao copiar ou baixar o pedido, você escolhe como compartilhá-lo. Quando o
+      canal de WhatsApp estiver disponível, você poderá revisar a mensagem
+      antes de enviá-la; o serviço seguirá as políticas de privacidade do
+      WhatsApp.
+    </p>
+    <p>
+      Esta página não utiliza ferramentas de análise, publicidade ou cookies
+      próprios. A plataforma de hospedagem pode tratar dados técnicos
+      necessários para disponibilizar o site.
+    </p>
+    <button class="button button-dark" type="button" data-close-dialog>
+      Entendi <svg class="icon">
+        <use href="#i-check" />
+      </svg>
+    </button>
+  </dialog>
+</body>
+
 </html>
