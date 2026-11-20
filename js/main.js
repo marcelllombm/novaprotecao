@@ -173,18 +173,61 @@
     );
   }
 
+  function getWhatsAppNumber() {
+    const rawNumber = String(config.whatsappNumber || "").replace(/\D/g, "");
+    const number = /^\d{10,11}$/.test(rawNumber) ? `55${rawNumber}` : rawNumber;
+    return /^55\d{10,11}$/.test(number) ? number : "";
+  }
+
+  function initWhatsAppFloat() {
+    const button = $("#whatsapp-float");
+    if (!button) return;
+    const number = getWhatsAppNumber();
+    if (!number) {
+      button.hidden = true;
+      button.removeAttribute("href");
+      return;
+    }
+    const text = `Olá, ${config.brandName}! Gostaria de uma cotação de proteção veicular.`;
+    button.href = `https://wa.me/${number}?text=${encodeURIComponent(text)}`;
+    button.hidden = false;
+  }
+
   function initQuoteForm() {
     const form = $("#quote-form");
     const errorSummary = $("#form-errors");
     const messages = {
       name: "Informe seu nome com pelo menos 2 caracteres.",
+      phone: "Informe seu celular com DDD.",
       model: "Informe o modelo e o ano do veículo.",
       city: "Informe sua cidade e seu estado.",
     };
 
+    function normalizePhoneDigits(value) {
+      let digits = value.replace(/\D/g, "");
+      if (digits.length >= 12 && digits.startsWith("55")) {
+        digits = digits.slice(2);
+      }
+      return digits.slice(0, 11);
+    }
+
+    function formatPhone(value) {
+      const digits = normalizePhoneDigits(value);
+      if (!digits) return "";
+      if (digits.length <= 2) return `(${digits}`;
+      if (digits.length <= 6) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+      if (digits.length <= 10) {
+        return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+      }
+      return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+    }
+
     function validateField(input) {
       const value = input.value.trim();
-      const invalid = value.length < (input.id === "name" ? 2 : 3);
+      const invalid =
+        input.id === "phone"
+          ? !/^\d{10,11}$/.test(normalizePhoneDigits(value))
+          : value.length < (input.id === "name" ? 2 : 3);
       input.setAttribute("aria-invalid", String(invalid));
       $(`#${input.id}-error`).textContent = invalid ? messages[input.id] : "";
       return !invalid;
@@ -192,6 +235,9 @@
 
     $$(".form-field input", form).forEach((input) => {
       input.addEventListener("input", () => {
+        if (input.id === "phone") {
+          input.value = formatPhone(input.value);
+        }
         if (input.getAttribute("aria-invalid") === "true") validateField(input);
         errorSummary.hidden = true;
       });
@@ -226,6 +272,7 @@
         `Olá, ${config.brandName}! Gostaria de uma cotação de proteção veicular.`,
         "",
         `Nome: ${values.get("name").trim()}`,
+        `Celular: ${formatPhone(values.get("phone"))}`,
         `Veículo: ${values.get("vehicle") === "moto" ? "Moto" : "Carro"}`,
         `Modelo e ano: ${values.get("model").trim()}`,
         `Cidade/UF: ${values.get("city").trim()}`,
@@ -234,8 +281,8 @@
       ].join("\n");
       $("#quote-summary").value = message;
       $("#copy-status").textContent = "";
-      const number = config.whatsappNumber.replace(/\D/g, "");
-      const available = /^55\d{10,11}$/.test(number);
+      const number = getWhatsAppNumber();
+      const available = Boolean(number);
       const whatsapp = $("#whatsapp-send");
       whatsapp.hidden = !available;
       if (available) {
@@ -306,6 +353,7 @@
   initVehicleSelector();
   initCoverages();
   initDialogs();
+  initWhatsAppFloat();
   initQuoteForm();
   // Sem JavaScript, o formulário não deve enviar dados por uma requisição GET.
   $(".form-submit").disabled = false;

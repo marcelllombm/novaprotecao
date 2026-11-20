@@ -8,5 +8,5 @@ window.NOVA_CONFIG = Object.freeze({
   // WhatsApp comercial com país + DDD + número, somente dígitos.
   // Deixe vazio até receber o número real da empresa.
   // Exemplo de formato: 55 + DDD + número. Nunca use um número fictício.
-  whatsappNumber: "",
+  whatsappNumber: "5582982291957",
 });

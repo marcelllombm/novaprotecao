@@ -1,0 +1,367 @@
+{
+  "version": 1,
+  "jobId": "6c9cde28-13c4-418c-9b13-4475ab0f6bc4",
+  "sessionId": "8adab509-c915-4726-a8a9-ca8e6e9fd161",
+  "scopeKey": "4e21c3ccd793a9122fe2a05a9de36c06eebc06c59cae011d3eabfb1c00212ac2",
+  "revision": 63,
+  "createdAt": "2026-11-19T10:30:12.573Z",
+  "updatedAt": "2026-11-19T10:30:43.923Z",
+  "producerGraceExpiresAt": "2026-11-19T10:30:42.576Z",
+  "bestEffortDeadlineAt": "2026-11-19T10:31:35.576Z",
+  "producers": {
+    "core": {
+      "state": "sealed",
+      "intentKey": "5313b3bcb5d058f91f7c7b7231f1bf3e5355ca9071c68268e1e4e67275e15741",
+      "payloadDigest": "5313b3bcb5d058f91f7c7b7231f1bf3e5355ca9071c68268e1e4e67275e15741",
+      "sealedAt": "2026-11-19T10:30:42.923Z",
+      "sealedBy": "recovery"
+    },
+    "wiki": {
+      "state": "no-op",
+      "sealedAt": "2026-11-19T10:30:12.624Z",
+      "sealedBy": "wiki-producer"
+    }
+  },
+  "actions": {
+    "foreground-cleanup": {
+      "class": "required",
+      "phase": "deferred-required",
+      "status": "completed",
+      "attempts": 1,
+      "idempotencyKey": "29f86a9d5ed3aa8f624c7a3141c36760c46574c9b8313dcbb7e9adc4ce65af35",
+      "payload": {
+        "transcriptPath": "/Users/macmini2/.claude/projects/-Users-macmini2-git-novaProtecao/8adab509-c915-4726-a8a9-ca8e6e9fd161.jsonl",
+        "cwd": "/Users/macmini2/git/novaProtecao",
+        "reason": "other",
+        "input": {
+          "session_id": "8adab509-c915-4726-a8a9-ca8e6e9fd161",
+          "transcript_path": "/Users/macmini2/.claude/projects/-Users-macmini2-git-novaProtecao/8adab509-c915-4726-a8a9-ca8e6e9fd161.jsonl",
+          "cwd": "/Users/macmini2/git/novaProtecao",
+          "scratchpad_dir": "/private/tmp/claude-501/-Users-macmini2-git-novaProtecao/8adab509-c915-4726-a8a9-ca8e6e9fd161/scratchpad",
+          "hook_event_name": "SessionEnd",
+          "reason": "other"
+        },
+        "initialTeamNames": [],
+        "openClawRouting": {},
+        "metrics": {
+          "session_id": "8adab509-c915-4726-a8a9-ca8e6e9fd161",
+          "ended_at": "2026-11-19T10:30:42.763Z",
+          "reason": "other",
+          "agents_spawned": 0,
+          "agents_completed": 0,
+          "modes_used": []
+        }
+      },
+      "budgetMs": 9000,
+      "claimedAt": "2026-11-19T10:30:42.637Z",
+      "runner": {
+        "attempt": 1,
+        "runnerNonce": "c983b04b-68d0-4253-9230-febd457f818c",
+        "phase": "terminal",
+        "deadlineAt": "2026-11-19T10:30:52.581Z"
+      },
+      "lastOutcomeCode": "completed",
+      "completedAt": "2026-11-19T10:30:42.914Z"
+    },
+    "wiki-capture": {
+      "class": "required",
+      "phase": "deferred-required",
+      "status": "completed",
+      "attempts": 0,
+      "idempotencyKey": "b5d45f6afe55dfc5bbc17211fb3af2c8a7d44158becf4f65aa38def3de692292",
+      "payload": {
+        "transcriptPath": "/Users/macmini2/.claude/projects/-Users-macmini2-git-novaProtecao/8adab509-c915-4726-a8a9-ca8e6e9fd161.jsonl",
+        "cwd": "/Users/macmini2/git/novaProtecao",
+        "reason": "other",
+        "input": {
+          "session_id": "8adab509-c915-4726-a8a9-ca8e6e9fd161",
+          "transcript_path": "/Users/macmini2/.claude/projects/-Users-macmini2-git-novaProtecao/8adab509-c915-4726-a8a9-ca8e6e9fd161.jsonl",
+          "cwd": "/Users/macmini2/git/novaProtecao",
+          "scratchpad_dir": "/private/tmp/claude-501/-Users-macmini2-git-novaProtecao/8adab509-c915-4726-a8a9-ca8e6e9fd161/scratchpad",
+          "hook_event_name": "SessionEnd",
+          "reason": "other"
+        },
+        "initialTeamNames": [],
+        "openClawRouting": {}
+      },
+      "budgetMs": 9000,
+      "completedAt": "2026-11-19T10:30:12.624Z"
+    },
+    "team-cleanup": {
+      "class": "required",
+      "phase": "deferred-required",
+      "status": "completed",
+      "attempts": 1,
+      "idempotencyKey": "32e72f02c5939a3d7dd71f67a14a984bfe09c537ae7854425a6039cdee173df7",
+      "payload": {
+        "transcriptPath": "/Users/macmini2/.claude/projects/-Users-macmini2-git-novaProtecao/8adab509-c915-4726-a8a9-ca8e6e9fd161.jsonl",
+        "cwd": "/Users/macmini2/git/novaProtecao",
+        "reason": "other",
+        "input": {
+          "session_id": "8adab509-c915-4726-a8a9-ca8e6e9fd161",
+          "transcript_path": "/Users/macmini2/.claude/projects/-Users-macmini2-git-novaProtecao/8adab509-c915-4726-a8a9-ca8e6e9fd161.jsonl",
+          "cwd": "/Users/macmini2/git/novaProtecao",
+          "scratchpad_dir": "/private/tmp/claude-501/-Users-macmini2-git-novaProtecao/8adab509-c915-4726-a8a9-ca8e6e9fd161/scratchpad",
+          "hook_event_name": "SessionEnd",
+          "reason": "other"
+        },
+        "initialTeamNames": [],
+        "openClawRouting": {},
+        "metrics": {
+          "session_id": "8adab509-c915-4726-a8a9-ca8e6e9fd161",
+          "ended_at": "2026-11-19T10:30:42.763Z",
+          "reason": "other",
+          "agents_spawned": 0,
+          "agents_completed": 0,
+          "modes_used": []
+        }
+      },
+      "budgetMs": 9000,
+      "claimedAt": "2026-11-19T10:30:42.938Z",
+      "runner": {
+        "attempt": 1,
+        "runnerNonce": "6a9ea378-7982-414c-80ce-4dace3c42c5a",
+        "phase": "terminal",
+        "deadlineAt": "2026-11-19T10:30:52.581Z"
+      },
+      "lastOutcomeCode": "completed",
+      "completedAt": "2026-11-19T10:30:43.073Z"
+    },
+    "python-cleanup": {
+      "class": "required",
+      "phase": "deferred-required",
+      "status": "completed",
+      "attempts": 1,
+      "idempotencyKey": "5e9f0e6beac1f80a7609fd9fde01abd2c31a2e495d474d58832fdb5b6c819a3a",
+      "payload": {
+        "transcriptPath": "/Users/macmini2/.claude/projects/-Users-macmini2-git-novaProtecao/8adab509-c915-4726-a8a9-ca8e6e9fd161.jsonl",
+        "cwd": "/Users/macmini2/git/novaProtecao",
+        "reason": "other",
+        "input": {
+          "session_id": "8adab509-c915-4726-a8a9-ca8e6e9fd161",
+          "transcript_path": "/Users/macmini2/.claude/projects/-Users-macmini2-git-novaProtecao/8adab509-c915-4726-a8a9-ca8e6e9fd161.jsonl",
+          "cwd": "/Users/macmini2/git/novaProtecao",
+          "scratchpad_dir": "/private/tmp/claude-501/-Users-macmini2-git-novaProtecao/8adab509-c915-4726-a8a9-ca8e6e9fd161/scratchpad",
+          "hook_event_name": "SessionEnd",
+          "reason": "other"
+        },
+        "initialTeamNames": [],
+        "openClawRouting": {},
+        "metrics": {
+          "session_id": "8adab509-c915-4726-a8a9-ca8e6e9fd161",
+          "ended_at": "2026-11-19T10:30:42.763Z",
+          "reason": "other",
+          "agents_spawned": 0,
+          "agents_completed": 0,
+          "modes_used": []
+        }
+      },
+      "budgetMs": 9000,
+      "claimedAt": "2026-11-19T10:30:43.089Z",
+      "runner": {
+        "attempt": 1,
+        "runnerNonce": "cd699763-0cd6-42d3-82d7-d7b9ac6e4127",
+        "phase": "terminal",
+        "deadlineAt": "2026-11-19T10:30:52.581Z"
+      },
+      "lastOutcomeCode": "completed",
+      "completedAt": "2026-11-19T10:30:43.226Z"
+    },
+    "reply-cleanup": {
+      "class": "required",
+      "phase": "deferred-required",
+      "status": "completed",
+      "attempts": 1,
+      "idempotencyKey": "b9bdd04fdb070860d754713dd5485885cb571a7ebf2515902112706f9df0c3e7",
+      "payload": {
+        "transcriptPath": "/Users/macmini2/.claude/projects/-Users-macmini2-git-novaProtecao/8adab509-c915-4726-a8a9-ca8e6e9fd161.jsonl",
+        "cwd": "/Users/macmini2/git/novaProtecao",
+        "reason": "other",
+        "input": {
+          "session_id": "8adab509-c915-4726-a8a9-ca8e6e9fd161",
+          "transcript_path": "/Users/macmini2/.claude/projects/-Users-macmini2-git-novaProtecao/8adab509-c915-4726-a8a9-ca8e6e9fd161.jsonl",
+          "cwd": "/Users/macmini2/git/novaProtecao",
+          "scratchpad_dir": "/private/tmp/claude-501/-Users-macmini2-git-novaProtecao/8adab509-c915-4726-a8a9-ca8e6e9fd161/scratchpad",
+          "hook_event_name": "SessionEnd",
+          "reason": "other"
+        },
+        "initialTeamNames": [],
+        "openClawRouting": {}
+      },
+      "budgetMs": 9000,
+      "claimedAt": "2026-11-19T10:30:43.240Z",
+      "runner": {
+        "attempt": 1,
+        "runnerNonce": "2fad7312-5a73-4cf9-902b-e5d84f60f6a7",
+        "phase": "terminal",
+        "deadlineAt": "2026-11-19T10:30:52.581Z"
+      },
+      "lastOutcomeCode": "completed",
+      "completedAt": "2026-11-19T10:30:43.370Z"
+    },
+    "callback": {
+      "class": "best-effort",
+      "phase": "deferred-best-effort",
+      "status": "completed",
+      "attempts": 1,
+      "idempotencyKey": "1c9902e6ca425ed442a6bb8de27b0486a8f2e8cd40441e36f332af91f41f4dac",
+      "payload": {
+        "transcriptPath": "/Users/macmini2/.claude/projects/-Users-macmini2-git-novaProtecao/8adab509-c915-4726-a8a9-ca8e6e9fd161.jsonl",
+        "cwd": "/Users/macmini2/git/novaProtecao",
+        "reason": "other",
+        "input": {
+          "session_id": "8adab509-c915-4726-a8a9-ca8e6e9fd161",
+          "transcript_path": "/Users/macmini2/.claude/projects/-Users-macmini2-git-novaProtecao/8adab509-c915-4726-a8a9-ca8e6e9fd161.jsonl",
+          "cwd": "/Users/macmini2/git/novaProtecao",
+          "scratchpad_dir": "/private/tmp/claude-501/-Users-macmini2-git-novaProtecao/8adab509-c915-4726-a8a9-ca8e6e9fd161/scratchpad",
+          "hook_event_name": "SessionEnd",
+          "reason": "other"
+        },
+        "initialTeamNames": [],
+        "openClawRouting": {},
+        "metrics": {
+          "session_id": "8adab509-c915-4726-a8a9-ca8e6e9fd161",
+          "ended_at": "2026-11-19T10:30:42.763Z",
+          "reason": "other",
+          "agents_spawned": 0,
+          "agents_completed": 0,
+          "modes_used": []
+        }
+      },
+      "budgetMs": 2000,
+      "claimedAt": "2026-11-19T10:30:43.384Z",
+      "runner": {
+        "attempt": 1,
+        "runnerNonce": "e19a8ee8-5c9a-4b0f-8c58-6a237d5b52cf",
+        "phase": "terminal",
+        "deadlineAt": "2026-11-19T10:30:52.581Z"
+      },
+      "lastOutcomeCode": "completed",
+      "completedAt": "2026-11-19T10:30:43.495Z"
+    },
+    "notification": {
+      "class": "best-effort",
+      "phase": "deferred-best-effort",
+      "status": "completed",
+      "attempts": 1,
+      "idempotencyKey": "8c8ffd55202755441b0ab4c55b81e1b27cecdefdd20238316a2c3a153a4160a4",
+      "payload": {
+        "transcriptPath": "/Users/macmini2/.claude/projects/-Users-macmini2-git-novaProtecao/8adab509-c915-4726-a8a9-ca8e6e9fd161.jsonl",
+        "cwd": "/Users/macmini2/git/novaProtecao",
+        "reason": "other",
+        "input": {
+          "session_id": "8adab509-c915-4726-a8a9-ca8e6e9fd161",
+          "transcript_path": "/Users/macmini2/.claude/projects/-Users-macmini2-git-novaProtecao/8adab509-c915-4726-a8a9-ca8e6e9fd161.jsonl",
+          "cwd": "/Users/macmini2/git/novaProtecao",
+          "scratchpad_dir": "/private/tmp/claude-501/-Users-macmini2-git-novaProtecao/8adab509-c915-4726-a8a9-ca8e6e9fd161/scratchpad",
+          "hook_event_name": "SessionEnd",
+          "reason": "other"
+        },
+        "initialTeamNames": [],
+        "openClawRouting": {},
+        "metrics": {
+          "session_id": "8adab509-c915-4726-a8a9-ca8e6e9fd161",
+          "ended_at": "2026-11-19T10:30:42.763Z",
+          "reason": "other",
+          "agents_spawned": 0,
+          "agents_completed": 0,
+          "modes_used": []
+        }
+      },
+      "budgetMs": 2000,
+      "claimedAt": "2026-11-19T10:30:43.510Z",
+      "runner": {
+        "attempt": 1,
+        "runnerNonce": "c9d0233a-c167-4c57-ad62-37381d3e1866",
+        "phase": "terminal",
+        "deadlineAt": "2026-11-19T10:30:52.581Z"
+      },
+      "lastOutcomeCode": "completed",
+      "completedAt": "2026-11-19T10:30:43.627Z"
+    },
+    "openclaw": {
+      "class": "best-effort",
+      "phase": "deferred-best-effort",
+      "status": "completed",
+      "attempts": 1,
+      "idempotencyKey": "ffc83cb874c2ed16ffc5f9822bbfc344d636cd71762e22d9e7f76d23980a49bd",
+      "payload": {
+        "transcriptPath": "/Users/macmini2/.claude/projects/-Users-macmini2-git-novaProtecao/8adab509-c915-4726-a8a9-ca8e6e9fd161.jsonl",
+        "cwd": "/Users/macmini2/git/novaProtecao",
+        "reason": "other",
+        "input": {
+          "session_id": "8adab509-c915-4726-a8a9-ca8e6e9fd161",
+          "transcript_path": "/Users/macmini2/.claude/projects/-Users-macmini2-git-novaProtecao/8adab509-c915-4726-a8a9-ca8e6e9fd161.jsonl",
+          "cwd": "/Users/macmini2/git/novaProtecao",
+          "scratchpad_dir": "/private/tmp/claude-501/-Users-macmini2-git-novaProtecao/8adab509-c915-4726-a8a9-ca8e6e9fd161/scratchpad",
+          "hook_event_name": "SessionEnd",
+          "reason": "other"
+        },
+        "initialTeamNames": [],
+        "openClawRouting": {},
+        "metrics": {
+          "session_id": "8adab509-c915-4726-a8a9-ca8e6e9fd161",
+          "ended_at": "2026-11-19T10:30:42.763Z",
+          "reason": "other",
+          "agents_spawned": 0,
+          "agents_completed": 0,
+          "modes_used": []
+        }
+      },
+      "budgetMs": 2000,
+      "claimedAt": "2026-11-19T10:30:43.641Z",
+      "runner": {
+        "attempt": 1,
+        "runnerNonce": "12421fdb-1e80-403d-91cc-5a7e843e0ed0",
+        "phase": "terminal",
+        "deadlineAt": "2026-11-19T10:30:52.581Z"
+      },
+      "lastOutcomeCode": "completed",
+      "completedAt": "2026-11-19T10:30:43.758Z"
+    },
+    "spawn-next": {
+      "class": "best-effort",
+      "phase": "deferred-best-effort",
+      "status": "completed",
+      "attempts": 1,
+      "idempotencyKey": "faf783b2cd5cc504230c2ac193b981edb8f5a81ae17209a1ed08b3c00b7cea3f",
+      "payload": {
+        "transcriptPath": "/Users/macmini2/.claude/projects/-Users-macmini2-git-novaProtecao/8adab509-c915-4726-a8a9-ca8e6e9fd161.jsonl",
+        "cwd": "/Users/macmini2/git/novaProtecao",
+        "reason": "other",
+        "input": {
+          "session_id": "8adab509-c915-4726-a8a9-ca8e6e9fd161",
+          "transcript_path": "/Users/macmini2/.claude/projects/-Users-macmini2-git-novaProtecao/8adab509-c915-4726-a8a9-ca8e6e9fd161.jsonl",
+          "cwd": "/Users/macmini2/git/novaProtecao",
+          "scratchpad_dir": "/private/tmp/claude-501/-Users-macmini2-git-novaProtecao/8adab509-c915-4726-a8a9-ca8e6e9fd161/scratchpad",
+          "hook_event_name": "SessionEnd",
+          "reason": "other"
+        },
+        "initialTeamNames": [],
+        "openClawRouting": {}
+      },
+      "budgetMs": 2000,
+      "claimedAt": "2026-11-19T10:30:43.773Z",
+      "runner": {
+        "attempt": 1,
+        "runnerNonce": "640042ff-60d2-4614-b656-028c5b32453a",
+        "phase": "terminal",
+        "deadlineAt": "2026-11-19T10:30:52.581Z"
+      },
+      "lastOutcomeCode": "completed",
+      "completedAt": "2026-11-19T10:30:43.893Z"
+    }
+  },
+  "owner": null,
+  "phase": "complete",
+  "recoverableFailure": {
+    "reason": "actions-settled",
+    "releasedAt": "2026-11-19T10:30:43.907Z",
+    "ownerNonce": "224c4622-2295-4891-9be8-00c0ff72f49b"
+  },
+  "completion": {
+    "completedAt": "2026-11-19T10:30:43.907Z",
+    "terminalDigest": "5b0f82e1c29ae2eedfbac1840a257043b5286e51420ae0cb136dafb37978862d",
+    "terminalRevision": 62
+  }
+}

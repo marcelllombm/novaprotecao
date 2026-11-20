@@ -3,3 +3,6 @@ node_modules/
 .DS_Store
 .openai/local/
 *.log
+/agents/skills/
+/docs
+/openai
