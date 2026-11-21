@@ -219,12 +219,36 @@ fieldset {
 }
 
 .button-primary {
+  position: relative;
+  overflow: hidden;
   color: var(--color-ink);
   background: var(--color-accent);
+  transition:
+    background 180ms ease,
+    color 180ms ease,
+    border-color 180ms ease,
+    transform 160ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 220ms ease;
+}
+
+.button-primary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 20%, rgb(255 255 255 / 45%) 50%, transparent 80%);
+  transform: translateX(-130%);
+  animation: cta-sheen 5.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  pointer-events: none;
 }
 
 .button-primary:hover {
   background: #82dbfa;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgb(77 200 245 / 26%);
+}
+
+.button-primary:active {
+  transform: scale(0.97);
 }
 
 .button-light {
@@ -347,9 +371,33 @@ fieldset {
 /* 03. Cabeçalho ------------------------------------------------------------ */
 .site-header {
   color: white;
-  background: var(--color-ink);
-  position: relative;
-  z-index: 10;
+  background: rgb(9 35 49 / 94%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  transition:
+    background 260ms ease,
+    box-shadow 260ms ease;
+}
+
+.site-header.is-scrolled {
+  background: rgb(6 28 41 / 92%);
+  box-shadow: 0 12px 32px rgb(4 18 26 / 28%);
+}
+
+.scroll-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-brand), var(--color-accent), #a6ebff);
+  transform-origin: left center;
+  transform: scaleX(0);
+  will-change: transform;
+  pointer-events: none;
 }
 
 .header-inner {
@@ -402,14 +450,21 @@ fieldset {
   isolation: isolate;
 }
 
-.hero-image {
+.hero-media {
   position: absolute;
   inset: 0 0 0 auto;
   width: 83%;
   height: 100%;
+  overflow: hidden;
+  z-index: -3;
+}
+
+.hero-image {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   object-position: 65% 50%;
-  z-index: -3;
+  will-change: transform;
 }
 
 .hero-shade {
@@ -428,6 +483,52 @@ fieldset {
       rgb(9 35 49 / 0%) 24%,
       rgb(9 35 49 / 7%) 85%,
       #092331 100%);
+}
+
+.hero-glow {
+  position: absolute;
+  right: 4%;
+  top: 6%;
+  width: min(640px, 56vw);
+  height: min(640px, 56vw);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 48% 45%, rgb(77 200 245 / 26%) 0%, rgb(0 135 198 / 12%) 38%, transparent 70%);
+  filter: blur(22px);
+  z-index: -1;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.hero-3d-stage {
+  position: absolute;
+  right: clamp(18px, 4.5vw, 96px);
+  top: 45%;
+  transform: translateY(-50%);
+  width: clamp(270px, 31vw, 430px);
+  height: clamp(270px, 31vw, 430px);
+  z-index: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 24px 48px rgb(4 19 28 / 45%));
+}
+
+.hero-3d-stage canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.hero-line-inner {
+  display: inline-block;
+  will-change: transform;
 }
 
 .hero-content {
@@ -1052,6 +1153,94 @@ fieldset {
   border-radius: 50%;
   background: var(--color-ink);
   color: #bde7fa;
+}
+
+.route-pin::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1.5px solid rgb(77 200 245 / 55%);
+  animation: radar-pulse 2.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  pointer-events: none;
+}
+
+.route-truck {
+  will-change: transform;
+}
+
+.status-dot {
+  position: relative;
+}
+
+.status-dot::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.35;
+  animation: dot-breathe 2.4s ease-in-out infinite;
+}
+
+.whatsapp-float::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 2px solid rgb(21 128 61 / 65%);
+  animation: whatsapp-pulse 3.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  pointer-events: none;
+}
+
+.faq-list summary .icon {
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.faq-list details[open] summary .icon {
+  transform: rotate(45deg);
+}
+
+@keyframes cta-sheen {
+  0%, 72% {
+    transform: translateX(-130%);
+  }
+  100% {
+    transform: translateX(130%);
+  }
+}
+
+@keyframes radar-pulse {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.75;
+  }
+  100% {
+    transform: scale(1.65);
+    opacity: 0;
+  }
+}
+
+@keyframes dot-breathe {
+  0%, 100% {
+    transform: scale(0.9);
+    opacity: 0.25;
+  }
+  50% {
+    transform: scale(1.55);
+    opacity: 0.55;
+  }
+}
+
+@keyframes whatsapp-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.65;
+  }
+  45%, 100% {
+    transform: scale(1.22, 1.38);
+    opacity: 0;
+  }
 }
 
 .route-pin .icon {
@@ -1734,6 +1923,14 @@ fieldset {
     min-height: 85px;
   }
 
+  .hero-3d-stage {
+    width: clamp(210px, 28vw, 290px);
+    height: clamp(210px, 28vw, 290px);
+    right: 16px;
+    top: 40%;
+    opacity: 0.88;
+  }
+
   .brand {
     width: 175px;
   }
@@ -1987,12 +2184,26 @@ fieldset {
     margin-bottom: 23px;
   }
 
-  .hero-image {
+  .hero-media {
     top: auto;
     bottom: 0;
+    left: 0;
     height: 59%;
     width: 100%;
+  }
+
+  .hero-image {
     object-position: 66% 60%;
+  }
+
+  .hero-3d-stage {
+    top: auto;
+    bottom: 62px;
+    right: 8px;
+    transform: none;
+    width: 180px;
+    height: 180px;
+    opacity: 0.92;
   }
 
   .hero-shade {

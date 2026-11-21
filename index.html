@@ -19,9 +19,13 @@
   <link rel="preload" href="assets/fonts/sora-latin.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="assets/images/estrada-nova.webp" as="image" fetchpriority="high" />
   <link rel="stylesheet" href="css/styles.css" />
-  <script src="assets/vendor/motion.js" defer></script>
+  <script src="assets/vendor/gsap.min.js" defer></script>
+  <script src="assets/vendor/ScrollTrigger.min.js" defer></script>
+  <script src="assets/vendor/MotionPathPlugin.min.js" defer></script>
+  <script src="assets/vendor/three.min.js" defer></script>
   <script src="js/config.js" defer></script>
   <script src="js/content.js" defer></script>
+  <script src="js/hero-shield-3d.js" defer></script>
   <script src="js/main.js" defer></script>
 </head>
 
@@ -117,22 +121,28 @@
           </svg></a>
       </nav>
     </div>
+    <span class="scroll-progress" id="scroll-progress" aria-hidden="true"></span>
   </header>
 
   <main id="conteudo">
-    <!-- 1. Abertura: mensagem de marca e chamada principal. -->
+    <!-- 1. Abertura: mensagem de marca, parallax cinematográfico e escudo 3D procedural. -->
     <section class="hero" aria-labelledby="hero-title">
-      <img class="hero-image" src="assets/images/estrada-nova.webp"
-        alt="Carro e moto em uma estrada à beira do mar, cercada pela paisagem do litoral brasileiro" width="1536"
-        height="1024" fetchpriority="high" />
+      <div class="hero-media" aria-hidden="true">
+        <img class="hero-image" src="assets/images/estrada-nova.webp"
+          alt="Carro e moto em uma estrada à beira do mar, cercada pela paisagem do litoral brasileiro" width="1536"
+          height="1024" fetchpriority="high" />
+      </div>
       <div class="hero-shade"></div>
+      <div class="hero-glow" aria-hidden="true"></div>
+      <div class="hero-3d-stage" id="hero-3d-stage" aria-hidden="true"></div>
       <div class="container hero-content">
         <div class="hero-copy">
           <p class="hero-intro">
             <span class="status-dot"></span> Seu caminho merece uma Nova
             proteção.
           </p>
-          <h1 id="hero-title">A vida segue.<br />A gente protege.</h1>
+          <h1 id="hero-title"><span class="hero-line"><span class="hero-line-inner">A vida segue.</span></span><span
+              class="hero-line"><span class="hero-line-inner">A gente protege.</span></span></h1>
           <p class="hero-description">
             Do primeiro compromisso à próxima aventura.<br class="desktop-break" />
             Proteção para seu carro ou moto, com a tranquilidade de ter com
@@ -372,14 +382,14 @@
         </div>
         <div class="assistance-visual">
           <div class="hours-mark">
-            <span>24</span><span class="hours-unit">h<svg class="icon">
+            <span id="hours-counter">24</span><span class="hours-unit">h<svg class="icon">
                 <use href="#i-arrow-up" />
               </svg></span>
           </div>
           <div class="assistance-route" aria-hidden="true">
             <svg viewBox="0 0 480 150">
               <path class="route-shadow" d="M0 110h120c80 0 40-80 120-80h240" />
-              <path class="route-dash" d="M0 110h120c80 0 40-80 120-80h240" />
+              <path class="route-dash" id="assistance-route-path" d="M0 110h120c80 0 40-80 120-80h240" />
             </svg><span class="route-truck"><svg class="icon">
                 <use href="#i-truck" />
               </svg></span><span class="route-pin"><svg class="icon">

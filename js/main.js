@@ -1,4 +1,4 @@
-/* Nova Proteção — JavaScript sem framework, dividido por responsabilidade. */
+/* Nova Proteção — JavaScript com GSAP, ScrollTrigger, MotionPath e Three.js 3D. */
 (() => {
   "use strict";
 
@@ -9,19 +9,7 @@
   const config = window.NOVA_CONFIG;
   const content = window.NOVA_CONTENT;
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const animations = new Set();
-
-  /** Animação é melhoria progressiva: o site funciona sem Motion. */
-  function animate(element, keyframes, options = {}) {
-    if (reducedMotion.matches || !window.Motion || !element) return;
-    const animation = window.Motion.animate(element, keyframes, {
-      duration: 0.35,
-      ease: [0.22, 1, 0.36, 1],
-      ...options,
-    });
-    animations.add(animation);
-    Promise.resolve(animation).then(() => animations.delete(animation));
-  }
+  const hasGsap = () => Boolean(window.gsap && !reducedMotion.matches);
 
   function initNavigation() {
     const toggle = $(".menu-toggle");
@@ -93,7 +81,36 @@
       link.firstChild.textContent = `${vehicle.action} `;
       link.dataset.quoteVehicle = type;
       chooseQuoteVehicle(type);
-      animate($(".vehicle-copy"), { opacity: [0.6, 1], x: [-8, 0] });
+
+      if (hasGsap()) {
+        const tl = window.gsap.timeline({
+          defaults: { ease: "power3.out", overwrite: "auto" },
+        });
+        tl.fromTo(
+          ".vehicle-copy .icon-tile",
+          { scale: 0.78, rotate: -10, opacity: 0.4 },
+          { scale: 1, rotate: 0, opacity: 1, duration: 0.42, ease: "back.out(1.7)" },
+          0,
+        )
+          .fromTo(
+            ["#vehicle-title", "#vehicle-description", "#vehicle-quote"],
+            { opacity: 0, y: 16 },
+            { opacity: 1, y: 0, duration: 0.42, stagger: 0.05 },
+            0.04,
+          )
+          .fromTo(
+            ".vehicle-copy .check-list li",
+            { opacity: 0, x: -12 },
+            { opacity: 1, x: 0, duration: 0.34, stagger: 0.05 },
+            0.12,
+          )
+          .fromTo(
+            "#vehicle-image",
+            { scale: 1.09, opacity: 0.5 },
+            { scale: 1.03, opacity: 1, duration: 0.55, ease: "power2.out" },
+            0,
+          );
+      }
     }
     tabs.forEach((tab, index) => {
       tab.addEventListener("click", () => selectVehicle(tab.dataset.vehicle));
@@ -117,7 +134,6 @@
     $$("input[name='vehicle']").forEach((input) =>
       input.addEventListener("change", () => chooseQuoteVehicle(input.value)),
     );
-    // Pré-carregar só após a página carregar: a imagem principal tem prioridade.
     window.addEventListener("load", () => {
       const image = new Image();
       image.src = content.vehicles.moto.image;
@@ -137,8 +153,41 @@
         $("#coverage-title").textContent = coverage.title;
         $("#coverage-description").textContent = coverage.description;
         $("#coverage-icon use").setAttribute("href", `#i-${coverage.icon}`);
-        animate($(".shield-center"), { scale: [0.94, 1] });
-        animate($(".coverage-detail-copy"), { opacity: [0.6, 1] });
+
+        if (hasGsap()) {
+          const tl = window.gsap.timeline({
+            defaults: { overwrite: "auto" },
+          });
+          tl.fromTo(
+            ".shield-center",
+            { scale: 0.78, rotate: -16 },
+            {
+              scale: 1,
+              rotate: -7,
+              duration: 0.48,
+              ease: "back.out(1.9)",
+            },
+            0,
+          )
+            .fromTo(
+              ".orbit-one",
+              { scale: 0.88, opacity: 0.4 },
+              { scale: 1, opacity: 1, duration: 0.5, ease: "power2.out" },
+              0,
+            )
+            .fromTo(
+              ".coverage-detail-copy > *",
+              { opacity: 0, y: 14 },
+              {
+                opacity: 1,
+                y: 0,
+                duration: 0.38,
+                stagger: 0.055,
+                ease: "power3.out",
+              },
+              0.04,
+            );
+        }
       }),
     );
   }
@@ -146,6 +195,13 @@
   function openDialog(dialog) {
     dialog.showModal();
     document.body.classList.add("dialog-open");
+    if (hasGsap()) {
+      window.gsap.fromTo(
+        dialog,
+        { opacity: 0, y: 22, scale: 0.96 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.34, ease: "power3.out" },
+      );
+    }
   }
 
   function initDialogs() {
@@ -264,6 +320,25 @@
         errorSummary.replaceChildren(title, list);
         errorSummary.hidden = false;
         errorSummary.focus();
+
+        // Padrão Motion Design: Error Shake firme sem overshoot (320ms).
+        if (hasGsap()) {
+          window.gsap.fromTo(
+            invalidFields,
+            { x: 0 },
+            {
+              keyframes: [
+                { x: -8, duration: 0.06 },
+                { x: 8, duration: 0.07 },
+                { x: -5, duration: 0.07 },
+                { x: 5, duration: 0.06 },
+                { x: 0, duration: 0.06 },
+              ],
+              ease: "power2.inOut",
+              overwrite: "auto",
+            },
+          );
+        }
         return;
       }
       errorSummary.hidden = true;
@@ -329,23 +404,539 @@
   }
 
   function initMotion() {
-    // Uma entrada coordenada, sem esconder o conteúdo por CSS.
-    animate(
-      $(".hero-copy"),
-      { opacity: [0, 1], y: [20, 0] },
-      { duration: 0.85 },
-    );
-    animate(
-      $(".hero-caption"),
-      { opacity: [0, 1] },
-      { duration: 0.8, delay: 0.3 },
-    );
+    const hero3dStage = $("#hero-3d-stage");
+    const hero3d = window.NOVA_HERO_3D
+      ? window.NOVA_HERO_3D.init(hero3dStage, {
+          reducedMotion: reducedMotion.matches,
+        })
+      : null;
+
     reducedMotion.addEventListener("change", () => {
-      if (reducedMotion.matches) {
-        animations.forEach((animation) => animation.complete());
-        animations.clear();
+      hero3d?.setReducedMotion(reducedMotion.matches);
+    });
+
+    if (!window.gsap || !window.ScrollTrigger) return;
+    const { gsap, ScrollTrigger, MotionPathPlugin } = window;
+    gsap.registerPlugin(
+      ScrollTrigger,
+      ...(MotionPathPlugin ? [MotionPathPlugin] : []),
+    );
+
+    const mm = gsap.matchMedia();
+
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      // 0. Cabeçalho reativo + barra de progresso de leitura.
+      ScrollTrigger.create({
+        start: 40,
+        end: "max",
+        onToggle: (self) =>
+          $(".site-header")?.classList.toggle("is-scrolled", self.isActive),
+      });
+
+      gsap.to("#scroll-progress", {
+        scaleX: 1,
+        ease: "none",
+        scrollTrigger: {
+          trigger: document.documentElement,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 0.15,
+        },
+      });
+
+      // 1. HERO — Coreografia cinematográfica de entrada (3 camadas de movimento).
+      gsap.set(".hero-image", { scale: 1.16 });
+      const heroTl = gsap.timeline({
+        defaults: { ease: "power3.out" },
+      });
+
+      heroTl
+        .from(".hero-image", {
+          scale: 1.28,
+          duration: 1.4,
+          ease: "power2.out",
+        }, 0)
+        .from(".hero-glow", {
+          scale: 0.72,
+          opacity: 0,
+          duration: 1.2,
+          ease: "power2.out",
+        }, 0.05)
+        .from(".hero-intro", {
+          y: 18,
+          opacity: 0,
+          duration: 0.55,
+        }, 0.12)
+        .from(".hero-line-inner", {
+          yPercent: 112,
+          duration: 0.85,
+          stagger: 0.14,
+          ease: "power4.out",
+        }, 0.2)
+        .from(".hero-description", {
+          y: 22,
+          opacity: 0,
+          duration: 0.65,
+        }, 0.48)
+        .from(".hero-actions > *", {
+          y: 20,
+          opacity: 0,
+          scale: 0.95,
+          duration: 0.55,
+          stagger: 0.1,
+          ease: "back.out(1.35)",
+        }, 0.6)
+        .from(".hero-note", {
+          y: 14,
+          opacity: 0,
+          duration: 0.5,
+        }, 0.74)
+        .from(".hero-3d-stage", {
+          scale: 0.78,
+          opacity: 0,
+          y: 24,
+          duration: 1.0,
+          ease: "power3.out",
+        }, 0.28)
+        .from(".caption-line", {
+          scaleY: 0,
+          transformOrigin: "top center",
+          duration: 0.55,
+        }, 0.72)
+        .from(".hero-caption > span:last-child", {
+          x: -14,
+          opacity: 0,
+          duration: 0.55,
+        }, 0.82)
+        .from(".scroll-cue", {
+          y: -12,
+          opacity: 0,
+          duration: 0.5,
+        }, 0.95);
+
+      // Flutuação ambiente suave no indicador de rolagem.
+      gsap.to(".scroll-cue .icon", {
+        y: 6,
+        duration: 1.4,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+
+      // 1B. HERO — Parallax multicamada vinculado ao scroll (BG + Glow + Copy + 3D).
+      const heroParallax = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".hero",
+          start: "top top",
+          end: "bottom top",
+          scrub: 0.8,
+          onUpdate: (self) => hero3d?.setScroll(self.progress),
+        },
+      });
+
+      heroParallax
+        .to(".hero-image", { yPercent: 18, scale: 1.26, ease: "none" }, 0)
+        .to(".hero-glow", { yPercent: 12, scale: 1.12, opacity: 0.3, ease: "none" }, 0)
+        .to(".hero-copy", { y: -48, opacity: 0.2, ease: "none" }, 0)
+        .to(".hero-caption", { y: -74, opacity: 0, ease: "none" }, 0)
+        .to(".scroll-cue", { y: 18, opacity: 0, ease: "none" }, 0);
+
+      // 1C. HERO — Parallax interativo por mouse em desktop (gsap.quickTo 60fps).
+      if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+        const hero = $(".hero");
+        const bgX = gsap.quickTo(".hero-image", "x", { duration: 0.7, ease: "power3.out" });
+        const bgY = gsap.quickTo(".hero-image", "y", { duration: 0.7, ease: "power3.out" });
+        const glowX = gsap.quickTo(".hero-glow", "x", { duration: 0.9, ease: "power3.out" });
+        const glowY = gsap.quickTo(".hero-glow", "y", { duration: 0.9, ease: "power3.out" });
+
+        hero.addEventListener("pointermove", (event) => {
+          const rect = hero.getBoundingClientRect();
+          const nx = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+          const ny = ((event.clientY - rect.top) / rect.height) * 2 - 1;
+          bgX(-nx * 14);
+          bgY(-ny * 9);
+          glowX(nx * 24);
+          glowY(ny * 16);
+          hero3d?.setPointer(nx, ny);
+        });
+
+        hero.addEventListener("pointerleave", () => {
+          bgX(0);
+          bgY(0);
+          glowX(0);
+          glowY(0);
+          hero3d?.setPointer(0, 0);
+        });
+
+        const heroCta = $(".hero-actions .button-primary");
+        heroCta?.addEventListener("mouseenter", () => hero3d?.setBoost(true));
+        heroCta?.addEventListener("mouseleave", () => hero3d?.setBoost(false));
+      }
+
+      // 2. Faixa de serviços (entrada escalonada + pop dos ícones).
+      const stripTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".service-strip",
+          start: "top 90%",
+          once: true,
+        },
+      });
+      stripTl
+        .from(".strip-inner > div", {
+          y: 26,
+          opacity: 0,
+          duration: 0.55,
+          stagger: 0.11,
+          ease: "power3.out",
+        })
+        .from(".strip-inner > div > .icon", {
+          scale: 0.65,
+          rotate: -12,
+          duration: 0.5,
+          stagger: 0.11,
+          ease: "back.out(1.9)",
+        }, 0.08);
+
+      // 3. Seção de veículos (Carro / Moto + parallax suave na fotografia).
+      gsap.from(".vehicle-heading > *, .vehicle-tabs", {
+        y: 26,
+        opacity: 0,
+        duration: 0.65,
+        stagger: 0.1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".vehicle-section",
+          start: "top 80%",
+          once: true,
+        },
+      });
+
+      gsap.from(".vehicle-panel", {
+        y: 36,
+        opacity: 0,
+        scale: 0.98,
+        duration: 0.75,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".vehicle-panel",
+          start: "top 84%",
+          once: true,
+        },
+      });
+
+      gsap.fromTo(
+        "#vehicle-image",
+        { yPercent: -6, scale: 1.09 },
+        {
+          yPercent: 6,
+          scale: 1.09,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".vehicle-photo",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.7,
+          },
+        },
+      );
+
+      // 4. Seção de proteções (opções + escudo flutuante + órbitas contínuas).
+      gsap.from("#coberturas .section-heading > *", {
+        y: 24,
+        opacity: 0,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: "#coberturas",
+          start: "top 80%",
+          once: true,
+        },
+      });
+
+      gsap.from(".coverage-option", {
+        x: -24,
+        opacity: 0,
+        duration: 0.5,
+        stagger: 0.08,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".coverage-options",
+          start: "top 84%",
+          once: true,
+        },
+      });
+
+      gsap.from(".coverage-detail", {
+        y: 32,
+        opacity: 0,
+        scale: 0.97,
+        duration: 0.7,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".coverage-detail",
+          start: "top 84%",
+          once: true,
+        },
+      });
+
+      // Camada ambiente contínua nas órbitas e escudo de coberturas.
+      gsap.to(".shield-center", {
+        y: -7,
+        duration: 2.6,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+      gsap.to(".orbit-one", {
+        scale: 1.04,
+        opacity: 0.65,
+        duration: 3.2,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+      gsap.to(".orbit-two", {
+        scale: 0.96,
+        opacity: 0.55,
+        duration: 4.1,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+      gsap.to(".dot-one", {
+        y: -14,
+        x: 10,
+        duration: 3.4,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+      gsap.to(".dot-two", {
+        y: 12,
+        x: -12,
+        duration: 4.2,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+
+      // 5. Assistência 24h — Contador 0→24 + fluxo da estrada + guincho no trajeto SVG.
+      gsap.from(".assistance-copy > *", {
+        y: 26,
+        opacity: 0,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: "#assistencia",
+          start: "top 80%",
+          once: true,
+        },
+      });
+
+      const counterEl = $("#hours-counter");
+      if (counterEl) {
+        const counter = { value: 0 };
+        gsap.to(counter, {
+          value: 24,
+          duration: 1.25,
+          ease: "power2.out",
+          snap: { value: 1 },
+          scrollTrigger: {
+            trigger: ".hours-mark",
+            start: "top 82%",
+            once: true,
+          },
+          onUpdate: () => {
+            counterEl.textContent = String(Math.round(counter.value));
+          },
+        });
+      }
+
+      gsap.from(".hours-unit", {
+        y: 22,
+        opacity: 0,
+        scale: 0.85,
+        duration: 0.7,
+        ease: "back.out(1.6)",
+        scrollTrigger: {
+          trigger: ".hours-mark",
+          start: "top 82%",
+          once: true,
+        },
+      });
+
+      // Fluxo contínuo do tracejado da estrada.
+      gsap.to(".route-dash", {
+        strokeDashoffset: -34,
+        duration: 1.1,
+        repeat: -1,
+        ease: "none",
+      });
+
+      // Guincho percorrendo a curva exata da estrada conforme o scroll.
+      if (MotionPathPlugin && $("#assistance-route-path") && $(".route-truck")) {
+        gsap.set(".route-truck", {
+          rotation: 0,
+          transformOrigin: "50% 50%",
+        });
+        gsap.to(".route-truck", {
+          motionPath: {
+            path: "#assistance-route-path",
+            align: "#assistance-route-path",
+            alignOrigin: [0.5, 0.5],
+            autoRotate: true,
+            start: 0.08,
+            end: 0.78,
+          },
+          immediateRender: true,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".assistance-section",
+            start: "top 75%",
+            end: "bottom 30%",
+            scrub: 1.1,
+          },
+        });
+      }
+
+      // 6. Cotação — Passos numerados + entrada do formulário.
+      gsap.from(".quote-copy > h2, .quote-copy > p", {
+        y: 24,
+        opacity: 0,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: "#cotacao",
+          start: "top 82%",
+          once: true,
+        },
+      });
+
+      gsap.from(".steps li", {
+        x: -22,
+        opacity: 0,
+        duration: 0.55,
+        stagger: 0.12,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".steps",
+          start: "top 84%",
+          once: true,
+        },
+      });
+
+      gsap.from(".step-number", {
+        scale: 0.6,
+        duration: 0.5,
+        stagger: 0.12,
+        ease: "back.out(2)",
+        scrollTrigger: {
+          trigger: ".steps",
+          start: "top 84%",
+          once: true,
+        },
+      });
+
+      gsap.from(".quote-form", {
+        y: 40,
+        opacity: 0,
+        scale: 0.98,
+        duration: 0.75,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".quote-form",
+          start: "top 85%",
+          once: true,
+        },
+      });
+
+      // 7. Perguntas frequentes (entrada em lote via ScrollTrigger.batch).
+      gsap.from("#duvidas .faq-layout > div:first-child > *", {
+        y: 22,
+        opacity: 0,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: "#duvidas",
+          start: "top 82%",
+          once: true,
+        },
+      });
+
+      ScrollTrigger.batch(".faq-list details", {
+        start: "top 88%",
+        once: true,
+        onEnter: (batch) =>
+          gsap.from(batch, {
+            y: 22,
+            opacity: 0,
+            duration: 0.5,
+            stagger: 0.08,
+            ease: "power3.out",
+            overwrite: true,
+          }),
+      });
+
+      // Animação suave ao abrir cada pergunta do FAQ.
+      $$(".faq-list details").forEach((details) => {
+        details.addEventListener("toggle", () => {
+          if (details.open) {
+            gsap.fromTo(
+              $(".faq-answer", details),
+              { opacity: 0, y: -8 },
+              { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" },
+            );
+          }
+        });
+      });
+
+      // 8. Encerramento (arco decorativo em parallax + chamada final).
+      gsap.to(".closing-road", {
+        rotation: -18,
+        y: 55,
+        ease: "none",
+        scrollTrigger: {
+          trigger: ".closing-section",
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1,
+        },
+      });
+
+      gsap.from(".closing-inner > *", {
+        y: 28,
+        opacity: 0,
+        duration: 0.65,
+        stagger: 0.14,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".closing-section",
+          start: "top 82%",
+          once: true,
+        },
+      });
+
+      // 9. Botão flutuante de WhatsApp (entrada elástica suave após a hero).
+      const floatBtn = $("#whatsapp-float");
+      if (floatBtn && !floatBtn.hidden) {
+        gsap.from(floatBtn, {
+          scale: 0.65,
+          y: 24,
+          opacity: 0,
+          duration: 0.6,
+          delay: 1.05,
+          ease: "back.out(1.8)",
+        });
       }
     });
+
+    // Atualiza posições dos gatilhos após fontes e imagens carregarem.
+    window.addEventListener("load", () => ScrollTrigger.refresh());
+    document.fonts?.ready.then(() => ScrollTrigger.refresh());
   }
 
   $("#current-year").textContent = new Date().getFullYear();
