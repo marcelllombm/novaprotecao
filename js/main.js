@@ -8,7 +8,6 @@
   ];
   const config = window.NOVA_CONFIG;
   const content = window.NOVA_CONTENT;
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const hasGsap = () => Boolean(window.gsap);
 
   function onMediaChange(mq, handler) {
@@ -414,16 +413,12 @@
     try {
       hero3d = window.NOVA_HERO_3D
         ? window.NOVA_HERO_3D.init(hero3dStage, {
-            reducedMotion: reducedMotion.matches,
+            reducedMotion: false,
           })
         : null;
     } catch {
       hero3d = null;
     }
-
-    onMediaChange(reducedMotion, () => {
-      hero3d?.setReducedMotion(reducedMotion.matches);
-    });
 
     if (!window.gsap || !window.ScrollTrigger) return;
     const { gsap, ScrollTrigger, MotionPathPlugin } = window;
@@ -436,71 +431,7 @@
 
     const mm = gsap.matchMedia();
 
-    // Modo suave (quando "Reduzir Movimento" está ativado no iOS/sistema):
-    // mantém transições gentis de opacidade sem movimentos bruscos ou parallax.
-    mm.add("(prefers-reduced-motion: reduce)", () => {
-      ScrollTrigger.create({
-        start: 40,
-        end: "max",
-        onToggle: (self) =>
-          $(".site-header")?.classList.toggle("is-scrolled", self.isActive),
-      });
-
-      gsap.to("#scroll-progress", {
-        scaleX: 1,
-        ease: "none",
-        scrollTrigger: {
-          trigger: document.documentElement,
-          start: "top top",
-          end: "bottom bottom",
-          scrub: 0.15,
-        },
-      });
-
-      gsap.from(".hero-copy > *, .hero-3d-stage", {
-        opacity: 0,
-        duration: 0.6,
-        stagger: 0.08,
-        ease: "power2.out",
-      });
-
-      const counterEl = $("#hours-counter");
-      if (counterEl) {
-        const counter = { value: 0 };
-        gsap.to(counter, {
-          value: 24,
-          duration: 1.0,
-          ease: "power2.out",
-          snap: { value: 1 },
-          scrollTrigger: {
-            trigger: ".hours-mark",
-            start: "top 90%",
-            once: true,
-          },
-          onUpdate: () => {
-            counterEl.textContent = String(Math.round(counter.value));
-          },
-        });
-      }
-
-      ScrollTrigger.batch(
-        ".strip-inner > div, .vehicle-panel, .coverage-option, .coverage-detail, .steps li, .quote-form, .faq-list details, .closing-inner",
-        {
-          start: "top 92%",
-          once: true,
-          onEnter: (batch) =>
-            gsap.from(batch, {
-              opacity: 0,
-              duration: 0.5,
-              stagger: 0.06,
-              ease: "power2.out",
-              overwrite: true,
-            }),
-        },
-      );
-    });
-
-    mm.add("(prefers-reduced-motion: no-preference)", () => {
+    mm.add("all", () => {
       // 0. Cabeçalho reativo + barra de progresso de leitura.
       ScrollTrigger.create({
         start: 40,
