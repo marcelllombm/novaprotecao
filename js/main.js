@@ -9,7 +9,12 @@
   const config = window.NOVA_CONFIG;
   const content = window.NOVA_CONTENT;
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const hasGsap = () => Boolean(window.gsap && !reducedMotion.matches);
+  const hasGsap = () => Boolean(window.gsap);
+
+  function onMediaChange(mq, handler) {
+    if (mq.addEventListener) mq.addEventListener("change", handler);
+    else if (mq.addListener) mq.addListener(handler);
+  }
 
   function initNavigation() {
     const toggle = $(".menu-toggle");
@@ -42,9 +47,9 @@
         if (!$(".site-header").contains(document.activeElement)) setMenu(false);
       });
     });
-    window
-      .matchMedia("(min-width: 1001px)")
-      .addEventListener("change", () => setMenu(false));
+    onMediaChange(window.matchMedia("(min-width: 1001px)"), () =>
+      setMenu(false),
+    );
   }
 
   function chooseQuoteVehicle(type) {
@@ -405,13 +410,18 @@
 
   function initMotion() {
     const hero3dStage = $("#hero-3d-stage");
-    const hero3d = window.NOVA_HERO_3D
-      ? window.NOVA_HERO_3D.init(hero3dStage, {
-          reducedMotion: reducedMotion.matches,
-        })
-      : null;
+    let hero3d = null;
+    try {
+      hero3d = window.NOVA_HERO_3D
+        ? window.NOVA_HERO_3D.init(hero3dStage, {
+            reducedMotion: reducedMotion.matches,
+          })
+        : null;
+    } catch {
+      hero3d = null;
+    }
 
-    reducedMotion.addEventListener("change", () => {
+    onMediaChange(reducedMotion, () => {
       hero3d?.setReducedMotion(reducedMotion.matches);
     });
 
@@ -421,8 +431,74 @@
       ScrollTrigger,
       ...(MotionPathPlugin ? [MotionPathPlugin] : []),
     );
+    // Essencial no iOS Safari: evita recálculos enquanto a barra de endereço retrai.
+    ScrollTrigger.config({ ignoreMobileResize: true });
 
     const mm = gsap.matchMedia();
+
+    // Modo suave (quando "Reduzir Movimento" está ativado no iOS/sistema):
+    // mantém transições gentis de opacidade sem movimentos bruscos ou parallax.
+    mm.add("(prefers-reduced-motion: reduce)", () => {
+      ScrollTrigger.create({
+        start: 40,
+        end: "max",
+        onToggle: (self) =>
+          $(".site-header")?.classList.toggle("is-scrolled", self.isActive),
+      });
+
+      gsap.to("#scroll-progress", {
+        scaleX: 1,
+        ease: "none",
+        scrollTrigger: {
+          trigger: document.documentElement,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 0.15,
+        },
+      });
+
+      gsap.from(".hero-copy > *, .hero-3d-stage", {
+        opacity: 0,
+        duration: 0.6,
+        stagger: 0.08,
+        ease: "power2.out",
+      });
+
+      const counterEl = $("#hours-counter");
+      if (counterEl) {
+        const counter = { value: 0 };
+        gsap.to(counter, {
+          value: 24,
+          duration: 1.0,
+          ease: "power2.out",
+          snap: { value: 1 },
+          scrollTrigger: {
+            trigger: ".hours-mark",
+            start: "top 90%",
+            once: true,
+          },
+          onUpdate: () => {
+            counterEl.textContent = String(Math.round(counter.value));
+          },
+        });
+      }
+
+      ScrollTrigger.batch(
+        ".strip-inner > div, .vehicle-panel, .coverage-option, .coverage-detail, .steps li, .quote-form, .faq-list details, .closing-inner",
+        {
+          start: "top 92%",
+          once: true,
+          onEnter: (batch) =>
+            gsap.from(batch, {
+              opacity: 0,
+              duration: 0.5,
+              stagger: 0.06,
+              ease: "power2.out",
+              overwrite: true,
+            }),
+        },
+      );
+    });
 
     mm.add("(prefers-reduced-motion: no-preference)", () => {
       // 0. Cabeçalho reativo + barra de progresso de leitura.
@@ -445,14 +521,14 @@
       });
 
       // 1. HERO — Coreografia cinematográfica de entrada (3 camadas de movimento).
-      gsap.set(".hero-image", { scale: 1.16 });
+      gsap.set(".hero-image", { scale: 1.18 });
       const heroTl = gsap.timeline({
         defaults: { ease: "power3.out" },
       });
 
       heroTl
         .from(".hero-image", {
-          scale: 1.28,
+          scale: 1.3,
           duration: 1.4,
           ease: "power2.out",
         }, 0)
@@ -523,6 +599,16 @@
         ease: "sine.inOut",
       });
 
+      // Respiração sutil do halo atmosférico (visível também no mobile/iOS).
+      gsap.to(".hero-glow", {
+        scale: 1.08,
+        opacity: 0.8,
+        duration: 3.6,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+
       // 1B. HERO — Parallax multicamada vinculado ao scroll (BG + Glow + Copy + 3D).
       const heroParallax = gsap.timeline({
         scrollTrigger: {
@@ -530,14 +616,14 @@
           start: "top top",
           end: "bottom top",
           scrub: 0.8,
+          invalidateOnRefresh: true,
           onUpdate: (self) => hero3d?.setScroll(self.progress),
         },
       });
 
       heroParallax
-        .to(".hero-image", { yPercent: 18, scale: 1.26, ease: "none" }, 0)
-        .to(".hero-glow", { yPercent: 12, scale: 1.12, opacity: 0.3, ease: "none" }, 0)
-        .to(".hero-copy", { y: -48, opacity: 0.2, ease: "none" }, 0)
+        .to(".hero-image", { yPercent: 18, scale: 1.28, ease: "none" }, 0)
+        .to(".hero-copy", { y: -44, opacity: 0.2, ease: "none" }, 0)
         .to(".hero-caption", { y: -74, opacity: 0, ease: "none" }, 0)
         .to(".scroll-cue", { y: 18, opacity: 0, ease: "none" }, 0);
 
@@ -577,7 +663,7 @@
       const stripTl = gsap.timeline({
         scrollTrigger: {
           trigger: ".service-strip",
-          start: "top 90%",
+          start: "top 92%",
           once: true,
         },
       });
@@ -606,7 +692,7 @@
         ease: "power3.out",
         scrollTrigger: {
           trigger: ".vehicle-section",
-          start: "top 80%",
+          start: "top 88%",
           once: true,
         },
       });
@@ -619,7 +705,7 @@
         ease: "power3.out",
         scrollTrigger: {
           trigger: ".vehicle-panel",
-          start: "top 84%",
+          start: "top 90%",
           once: true,
         },
       });
@@ -636,6 +722,7 @@
             start: "top bottom",
             end: "bottom top",
             scrub: 0.7,
+            invalidateOnRefresh: true,
           },
         },
       );
@@ -649,7 +736,7 @@
         ease: "power3.out",
         scrollTrigger: {
           trigger: "#coberturas",
-          start: "top 80%",
+          start: "top 88%",
           once: true,
         },
       });
@@ -662,7 +749,7 @@
         ease: "power3.out",
         scrollTrigger: {
           trigger: ".coverage-options",
-          start: "top 84%",
+          start: "top 90%",
           once: true,
         },
       });
@@ -675,7 +762,7 @@
         ease: "power3.out",
         scrollTrigger: {
           trigger: ".coverage-detail",
-          start: "top 84%",
+          start: "top 90%",
           once: true,
         },
       });
@@ -730,7 +817,7 @@
         ease: "power3.out",
         scrollTrigger: {
           trigger: "#assistencia",
-          start: "top 80%",
+          start: "top 88%",
           once: true,
         },
       });
@@ -745,7 +832,7 @@
           snap: { value: 1 },
           scrollTrigger: {
             trigger: ".hours-mark",
-            start: "top 82%",
+            start: "top 88%",
             once: true,
           },
           onUpdate: () => {
@@ -762,12 +849,11 @@
         ease: "back.out(1.6)",
         scrollTrigger: {
           trigger: ".hours-mark",
-          start: "top 82%",
+          start: "top 88%",
           once: true,
         },
       });
 
-      // Fluxo contínuo do tracejado da estrada.
       gsap.to(".route-dash", {
         strokeDashoffset: -34,
         duration: 1.1,
@@ -775,30 +861,34 @@
         ease: "none",
       });
 
-      // Guincho percorrendo a curva exata da estrada conforme o scroll.
       if (MotionPathPlugin && $("#assistance-route-path") && $(".route-truck")) {
-        gsap.set(".route-truck", {
-          rotation: 0,
-          transformOrigin: "50% 50%",
-        });
-        gsap.to(".route-truck", {
-          motionPath: {
-            path: "#assistance-route-path",
-            align: "#assistance-route-path",
-            alignOrigin: [0.5, 0.5],
-            autoRotate: true,
-            start: 0.08,
-            end: 0.78,
-          },
-          immediateRender: true,
-          ease: "none",
-          scrollTrigger: {
-            trigger: ".assistance-section",
-            start: "top 75%",
-            end: "bottom 30%",
-            scrub: 1.1,
-          },
-        });
+        try {
+          gsap.set(".route-truck", {
+            rotation: 0,
+            transformOrigin: "50% 50%",
+          });
+          gsap.to(".route-truck", {
+            motionPath: {
+              path: "#assistance-route-path",
+              align: "#assistance-route-path",
+              alignOrigin: [0.5, 0.5],
+              autoRotate: true,
+              start: 0.08,
+              end: 0.78,
+            },
+            immediateRender: true,
+            ease: "none",
+            scrollTrigger: {
+              trigger: ".assistance-section",
+              start: "top 80%",
+              end: "bottom 25%",
+              scrub: 1.1,
+              invalidateOnRefresh: true,
+            },
+          });
+        } catch {
+          // Mantém posição padrão caso o navegador não suporte alinhamento SVG.
+        }
       }
 
       // 6. Cotação — Passos numerados + entrada do formulário.
@@ -810,7 +900,7 @@
         ease: "power3.out",
         scrollTrigger: {
           trigger: "#cotacao",
-          start: "top 82%",
+          start: "top 88%",
           once: true,
         },
       });
@@ -823,7 +913,7 @@
         ease: "power3.out",
         scrollTrigger: {
           trigger: ".steps",
-          start: "top 84%",
+          start: "top 90%",
           once: true,
         },
       });
@@ -835,7 +925,7 @@
         ease: "back.out(2)",
         scrollTrigger: {
           trigger: ".steps",
-          start: "top 84%",
+          start: "top 90%",
           once: true,
         },
       });
@@ -848,7 +938,7 @@
         ease: "power3.out",
         scrollTrigger: {
           trigger: ".quote-form",
-          start: "top 85%",
+          start: "top 90%",
           once: true,
         },
       });
@@ -862,13 +952,13 @@
         ease: "power3.out",
         scrollTrigger: {
           trigger: "#duvidas",
-          start: "top 82%",
+          start: "top 88%",
           once: true,
         },
       });
 
       ScrollTrigger.batch(".faq-list details", {
-        start: "top 88%",
+        start: "top 92%",
         once: true,
         onEnter: (batch) =>
           gsap.from(batch, {
@@ -881,7 +971,6 @@
           }),
       });
 
-      // Animação suave ao abrir cada pergunta do FAQ.
       $$(".faq-list details").forEach((details) => {
         details.addEventListener("toggle", () => {
           if (details.open) {
@@ -904,6 +993,7 @@
           start: "top bottom",
           end: "bottom top",
           scrub: 1,
+          invalidateOnRefresh: true,
         },
       });
 
@@ -915,7 +1005,7 @@
         ease: "power3.out",
         scrollTrigger: {
           trigger: ".closing-section",
-          start: "top 82%",
+          start: "top 88%",
           once: true,
         },
       });

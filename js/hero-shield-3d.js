@@ -62,11 +62,39 @@
     return geo;
   }
 
+  function blurGrayscaleImageData(src, width, height) {
+    const out = new Uint8ClampedArray(src.length);
+    for (let y = 0; y < height; y += 1) {
+      const y0 = Math.max(0, y - 1);
+      const y2 = Math.min(height - 1, y + 1);
+      for (let x = 0; x < width; x += 1) {
+        const x0 = Math.max(0, x - 1);
+        const x2 = Math.min(width - 1, x + 1);
+        const sum =
+          src[(y0 * width + x0) * 4] +
+          src[(y0 * width + x) * 4] +
+          src[(y0 * width + x2) * 4] +
+          src[(y * width + x0) * 4] +
+          src[(y * width + x) * 4] * 2 +
+          src[(y * width + x2) * 4] +
+          src[(y2 * width + x0) * 4] +
+          src[(y2 * width + x) * 4] +
+          src[(y2 * width + x2) * 4];
+        const v = Math.round(sum / 10);
+        const idx = (y * width + x) * 4;
+        out[idx] = v;
+        out[idx + 1] = v;
+        out[idx + 2] = v;
+        out[idx + 3] = 255;
+      }
+    }
+    return out;
+  }
+
   function buildLogoMaps(THREE, image, maxAnisotropy) {
     const width = image.naturalWidth || 448;
     const height = image.naturalHeight || 430;
 
-    // 1. Textura de cor principal (albedo) com preenchimento exato #0083c7 sob transparência.
     const colorCanvas = document.createElement("canvas");
     colorCanvas.width = width;
     colorCanvas.height = height;
@@ -84,7 +112,6 @@
 
     const maps = { colorMap, bumpMap: null, emissiveMap: null, roughnessMap: null };
 
-    // 2. Extrai relevo 3D (bump), brilho especular e emissão dos traços brancos do logo.png.
     try {
       const srcData = colorCtx.getImageData(0, 0, width, height);
       const data = srcData.data;
@@ -110,13 +137,9 @@
 
       for (let i = 0; i < data.length; i += 4) {
         const r = data[i];
-        const g = data[i + 1];
-        const b = data[i + 2];
-        // Traços brancos do aperto de mãos têm canal R alto; o azul #0083c7 tem R ≈ 0.
         const strokeMask = Math.max(0, Math.min(1, (r - 45) / 185));
         const bumpVal = Math.round(35 + strokeMask * 220);
         const emitVal = Math.round(strokeMask * 255);
-        // Esmalte azul mais acetinado (76) e traço branco mais polido/cerâmico (28).
         const roughVal = Math.round(76 - strokeMask * 48);
 
         bumpImg.data[i] = bumpVal;
@@ -135,19 +158,15 @@
         roughImg.data[i + 3] = 255;
       }
 
+      // Blur puro em JS (compatível com todas as versões do iOS Safari).
+      const blurred = blurGrayscaleImageData(bumpImg.data, width, height);
+      bumpImg.data.set(blurred);
+
       bumpCtx.putImageData(bumpImg, 0, 0);
       emissiveCtx.putImageData(emissiveImg, 0, 0);
       roughCtx.putImageData(roughImg, 0, 0);
 
-      // Suaviza o bump map para criar chanfro físico realista na borda dos traços brancos.
-      const smoothBump = document.createElement("canvas");
-      smoothBump.width = width;
-      smoothBump.height = height;
-      const smoothCtx = smoothBump.getContext("2d");
-      smoothCtx.filter = "blur(1.6px)";
-      smoothCtx.drawImage(bumpCanvas, 0, 0);
-
-      maps.bumpMap = new THREE.CanvasTexture(smoothBump);
+      maps.bumpMap = new THREE.CanvasTexture(bumpCanvas);
       maps.bumpMap.anisotropy = maxAnisotropy;
       maps.bumpMap.needsUpdate = true;
 
@@ -159,7 +178,7 @@
       maps.roughnessMap.anisotropy = maxAnisotropy;
       maps.roughnessMap.needsUpdate = true;
     } catch {
-      // Em file:// o canvas pode bloquear getImageData; mantém colorMap sem falhar.
+      // Fallback seguro quando getImageData não está disponível (ex.: file://).
     }
 
     return maps;
@@ -181,7 +200,6 @@
     const bevelSize = 0.055;
     const halfTotalZ = extrudeDepth / 2 + bevelThickness;
 
-    // 1. Corpo 3D metálico chanfrado no formato squircle exato do logo.png.
     const bodyShape = createSquircleShape(THREE, badgeWidth, badgeHeight, cornerRadius);
     const bodyGeo = new THREE.ExtrudeGeometry(bodyShape, {
       depth: extrudeDepth,
@@ -206,7 +224,6 @@
     bodyMesh.name = "logoChassis";
     badgePivot.add(bodyMesh);
 
-    // 2. Faces frontal e traseira com a arte oficial de assets/images/logo.png + relevo 3D.
     const faceShape = createSquircleShape(
       THREE,
       badgeWidth * 0.985,
@@ -242,7 +259,6 @@
     backFace.name = "logoBackFace";
     badgePivot.add(backFace);
 
-    // 3. Filete luminoso contornando o chanfro frontal do emblema.
     const rimShape = createSquircleShape(
       THREE,
       badgeWidth + bevelSize * 1.15,
@@ -265,7 +281,6 @@
     rimMesh.name = "logoGlowRim";
     badgePivot.add(rimMesh);
 
-    // 4. Anéis orbitais giroscópicos + satélites luminosos (proteção contínua 24h).
     const orbitPivotA = new THREE.Group();
     orbitPivotA.rotation.set(0.54, -0.34, 0.24);
     root.add(orbitPivotA);
@@ -316,7 +331,6 @@
     beaconB.position.set(0, 2.22, 0);
     orbitPivotB.add(beaconB);
 
-    // 5. Partículas atmosféricas luminosas (camada ambiente em profundidade).
     const moteCount = 44;
     const positions = new Float32Array(moteCount * 3);
     const colors = new Float32Array(moteCount * 3);
@@ -391,7 +405,7 @@
 
       badgePivot.position.y = floatY - state.scroll * 0.35;
       badgePivot.rotation.y =
-        Math.sin(elapsed * 0.65) * 0.22 +
+        Math.sin(elapsed * 0.65) * 0.24 +
         state.pointerX * 0.45 +
         state.scroll * 1.05;
       badgePivot.rotation.x =
@@ -422,156 +436,172 @@
     return root;
   }
 
-  function initHeroLogo3D(container, { reducedMotion = false } = {}) {
-    if (!container || !window.THREE) return null;
-    const THREE = window.THREE;
+  function mountFallbackLogo(container) {
+    const img = document.createElement("img");
+    img.src = LOGO_SRC;
+    img.alt = "";
+    img.className = "hero-3d-fallback";
+    container.replaceChildren(img);
+  }
 
-    let renderer;
-    try {
-      renderer = new THREE.WebGLRenderer({
-        antialias: true,
-        alpha: true,
-        powerPreference: "high-performance",
-      });
-    } catch {
-      container.hidden = true;
+  function initHeroLogo3D(container, { reducedMotion = false } = {}) {
+    if (!container) return null;
+    if (!window.THREE) {
+      mountFallbackLogo(container);
       return null;
     }
 
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    renderer.setClearColor(0x000000, 0);
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.12;
-    container.replaceChildren(renderer.domElement);
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 50);
-    camera.position.set(0, 0, 6.4);
-
-    // Iluminação de estúdio valorizando o esmalte azul #0083c7 e o relevo branco.
-    const hemi = new THREE.HemisphereLight(0xb5ecff, 0x071b27, 1.45);
-    scene.add(hemi);
-
-    const keyLight = new THREE.DirectionalLight(0xffffff, 2.35);
-    keyLight.position.set(3.4, 4.4, 5.4);
-    scene.add(keyLight);
-
-    const warmFill = new THREE.DirectionalLight(0xffddb0, 1.05);
-    warmFill.position.set(-4.0, -1.6, 3.2);
-    scene.add(warmFill);
-
-    const rimLight = new THREE.PointLight(0x4dc8f5, 5.8, 14);
-    rimLight.position.set(-2.2, 2.4, -2.5);
-    scene.add(rimLight);
-
-    const model = createLogoMedallionModel(THREE);
-    scene.add(model);
-
-    const maxAnisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), 8);
-    const logoImage = new Image();
-    logoImage.decoding = "async";
-    logoImage.onload = () => {
-      const maps = buildLogoMaps(THREE, logoImage, maxAnisotropy);
-      model.userData.applyLogoTexture(maps);
-      renderer.render(scene, camera);
-    };
-    logoImage.src = LOGO_SRC;
-
-    let width = 1;
-    let height = 1;
-    function resize() {
-      const rect = container.getBoundingClientRect();
-      width = Math.max(1, Math.round(rect.width));
-      height = Math.max(1, Math.round(rect.height));
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
-      renderer.setSize(width, height, false);
-      renderer.render(scene, camera);
-    }
-
-    const resizeObserver = new ResizeObserver(resize);
-    resizeObserver.observe(container);
-    resize();
-
-    let pointerX = 0;
-    let pointerY = 0;
-    let scrollProgress = 0;
-    let boostActive = false;
-    let visible = true;
-    let rafId = 0;
-    let lastTime = performance.now();
-    let elapsed = 0;
-
-    function frame(now) {
-      if (!visible || document.hidden) {
-        rafId = 0;
-        return;
-      }
-      const dt = Math.min((now - lastTime) / 1000, 0.05);
-      lastTime = now;
-      elapsed += dt;
-
-      model.userData.tick(dt, elapsed, pointerX, pointerY, scrollProgress, boostActive);
-      rimLight.position.x = Math.cos(elapsed * 0.9) * 3.0;
-      rimLight.position.y = Math.sin(elapsed * 0.7) * 2.2;
-
-      renderer.render(scene, camera);
-      rafId = requestAnimationFrame(frame);
-    }
-
-    function start() {
-      if (reducedMotion || rafId || !visible || document.hidden) return;
-      lastTime = performance.now();
-      rafId = requestAnimationFrame(frame);
-    }
-
-    function stop() {
-      if (!rafId) return;
-      cancelAnimationFrame(rafId);
-      rafId = 0;
-    }
-
-    if (reducedMotion) {
-      model.userData.tick(0.016, 0.4, 0, 0, 0, false);
-      renderer.render(scene, camera);
-    } else {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          visible = entries.some((entry) => entry.isIntersecting);
-          if (visible) start();
-          else stop();
-        },
-        { threshold: 0.02 },
-      );
-      observer.observe(container);
-      document.addEventListener("visibilitychange", () => {
-        if (document.hidden) stop();
-        else start();
+    const THREE = window.THREE;
+    try {
+      const renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true,
+        powerPreference: "default",
       });
-      start();
-    }
 
-    return {
-      setPointer(nx, ny) {
-        pointerX = Math.max(-1, Math.min(1, nx));
-        pointerY = Math.max(-1, Math.min(1, ny));
-      },
-      setScroll(progress) {
-        scrollProgress = Math.max(0, Math.min(1, progress));
-      },
-      setBoost(active) {
-        boostActive = Boolean(active);
-      },
-      setReducedMotion(isReduced) {
-        reducedMotion = Boolean(isReduced);
-        if (reducedMotion) {
-          stop();
-          renderer.render(scene, camera);
-        } else {
-          start();
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.setClearColor(0x000000, 0);
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.12;
+      container.replaceChildren(renderer.domElement);
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 50);
+      camera.position.set(0, 0, 6.4);
+
+      const hemi = new THREE.HemisphereLight(0xb5ecff, 0x071b27, 1.45);
+      scene.add(hemi);
+
+      const keyLight = new THREE.DirectionalLight(0xffffff, 2.35);
+      keyLight.position.set(3.4, 4.4, 5.4);
+      scene.add(keyLight);
+
+      const warmFill = new THREE.DirectionalLight(0xffddb0, 1.05);
+      warmFill.position.set(-4.0, -1.6, 3.2);
+      scene.add(warmFill);
+
+      const rimLight = new THREE.PointLight(0x4dc8f5, 5.8, 14);
+      rimLight.position.set(-2.2, 2.4, -2.5);
+      scene.add(rimLight);
+
+      const model = createLogoMedallionModel(THREE);
+      scene.add(model);
+
+      const maxAnisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), 8);
+      const logoImage = new Image();
+      logoImage.decoding = "async";
+      logoImage.onload = () => {
+        const maps = buildLogoMaps(THREE, logoImage, maxAnisotropy);
+        model.userData.applyLogoTexture(maps);
+        renderer.render(scene, camera);
+      };
+      logoImage.src = LOGO_SRC;
+
+      function resize() {
+        const rect = container.getBoundingClientRect();
+        const width = Math.max(120, Math.round(rect.width));
+        const height = Math.max(120, Math.round(rect.height));
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        renderer.setSize(width, height, false);
+        renderer.render(scene, camera);
+      }
+
+      if ("ResizeObserver" in window) {
+        const resizeObserver = new ResizeObserver(resize);
+        resizeObserver.observe(container);
+      }
+      window.addEventListener("resize", resize, { passive: true });
+      window.addEventListener("orientationchange", resize, { passive: true });
+      window.addEventListener("load", resize);
+      resize();
+      requestAnimationFrame(resize);
+
+      let pointerX = 0;
+      let pointerY = 0;
+      let scrollProgress = 0;
+      let boostActive = false;
+      let visible = true;
+      let rafId = 0;
+      let lastTime = performance.now();
+      let elapsed = 0;
+
+      function frame(now) {
+        if (!visible || document.hidden) {
+          rafId = 0;
+          return;
         }
-      },
-    };
+        const dt = Math.min((now - lastTime) / 1000, 0.05);
+        lastTime = now;
+        elapsed += dt;
+
+        model.userData.tick(dt, elapsed, pointerX, pointerY, scrollProgress, boostActive);
+        rimLight.position.x = Math.cos(elapsed * 0.9) * 3.0;
+        rimLight.position.y = Math.sin(elapsed * 0.7) * 2.2;
+
+        renderer.render(scene, camera);
+        rafId = requestAnimationFrame(frame);
+      }
+
+      function start() {
+        if (reducedMotion || rafId || !visible || document.hidden) return;
+        lastTime = performance.now();
+        rafId = requestAnimationFrame(frame);
+      }
+
+      function stop() {
+        if (!rafId) return;
+        cancelAnimationFrame(rafId);
+        rafId = 0;
+      }
+
+      if (reducedMotion) {
+        model.userData.tick(0.016, 0.4, 0, 0, 0, false);
+        renderer.render(scene, camera);
+      } else {
+        if ("IntersectionObserver" in window) {
+          const observer = new IntersectionObserver(
+            (entries) => {
+              visible = entries.some((entry) => entry.isIntersecting);
+              if (visible) start();
+              else stop();
+            },
+            { threshold: 0.01 },
+          );
+          observer.observe(container);
+        }
+        document.addEventListener("visibilitychange", () => {
+          if (document.hidden) stop();
+          else start();
+        });
+        start();
+      }
+
+      return {
+        setPointer(nx, ny) {
+          pointerX = Math.max(-1, Math.min(1, nx));
+          pointerY = Math.max(-1, Math.min(1, ny));
+        },
+        setScroll(progress) {
+          scrollProgress = Math.max(0, Math.min(1, progress));
+        },
+        setBoost(active) {
+          boostActive = Boolean(active);
+        },
+        setReducedMotion(isReduced) {
+          reducedMotion = Boolean(isReduced);
+          if (reducedMotion) {
+            stop();
+            renderer.render(scene, camera);
+          } else {
+            start();
+          }
+        },
+      };
+    } catch {
+      mountFallbackLogo(container);
+      return null;
+    }
   }
 
   window.NOVA_HERO_3D = { init: initHeroLogo3D };

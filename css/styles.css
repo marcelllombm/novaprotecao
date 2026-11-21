@@ -519,6 +519,24 @@ fieldset {
   height: 100%;
 }
 
+.hero-3d-fallback {
+  width: 68%;
+  height: 68%;
+  margin: 16% auto;
+  object-fit: contain;
+  border-radius: 22%;
+  animation: fallback-float 3.8s ease-in-out infinite;
+}
+
+@keyframes fallback-float {
+  0%, 100% {
+    transform: translateY(0) rotateY(-8deg);
+  }
+  50% {
+    transform: translateY(-10px) rotateY(8deg);
+  }
+}
+
 .hero-line {
   display: block;
   overflow: hidden;
@@ -2198,12 +2216,13 @@ fieldset {
 
   .hero-3d-stage {
     top: auto;
-    bottom: 62px;
-    right: 8px;
+    bottom: 58px;
+    right: 12px;
     transform: none;
-    width: 180px;
-    height: 180px;
-    opacity: 0.92;
+    width: 192px;
+    height: 192px;
+    z-index: 1;
+    opacity: 0.96;
   }
 
   .hero-shade {
