@@ -238,9 +238,9 @@
     );
 
     const faceMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0xffffff,
+      color: 0x0083c7,
       emissive: 0x70dcff,
-      emissiveIntensity: 0.28,
+      emissiveIntensity: 0.22,
       metalness: 0.12,
       roughness: 0.24,
       clearcoat: 1.0,
@@ -381,6 +381,7 @@
     };
 
     root.userData.applyLogoTexture = (maps) => {
+      faceMaterial.color.setHex(0xffffff);
       faceMaterial.map = maps.colorMap;
       if (maps.bumpMap) faceMaterial.bumpMap = maps.bumpMap;
       if (maps.roughnessMap) faceMaterial.roughnessMap = maps.roughnessMap;

@@ -521,39 +521,39 @@
       });
 
       // 1. HERO — Coreografia cinematográfica de entrada (3 camadas de movimento).
-      gsap.set(".hero-image", { scale: 1.18 });
       const heroTl = gsap.timeline({
         defaults: { ease: "power3.out" },
       });
 
       heroTl
-        .from(".hero-image", {
-          scale: 1.3,
-          duration: 1.4,
+        .from(".hero-media", {
+          scale: 1.09,
+          duration: 1.35,
           ease: "power2.out",
         }, 0)
         .from(".hero-glow", {
           scale: 0.72,
           opacity: 0,
-          duration: 1.2,
+          duration: 1.15,
           ease: "power2.out",
         }, 0.05)
         .from(".hero-intro", {
           y: 18,
           opacity: 0,
           duration: 0.55,
-        }, 0.12)
+        }, 0.1)
         .from(".hero-line-inner", {
-          yPercent: 112,
-          duration: 0.85,
-          stagger: 0.14,
-          ease: "power4.out",
-        }, 0.2)
+          y: 34,
+          opacity: 0,
+          duration: 0.78,
+          stagger: 0.13,
+          ease: "power3.out",
+        }, 0.18)
         .from(".hero-description", {
           y: 22,
           opacity: 0,
           duration: 0.65,
-        }, 0.48)
+        }, 0.44)
         .from(".hero-actions > *", {
           y: 20,
           opacity: 0,
@@ -561,34 +561,34 @@
           duration: 0.55,
           stagger: 0.1,
           ease: "back.out(1.35)",
-        }, 0.6)
+        }, 0.56)
         .from(".hero-note", {
           y: 14,
           opacity: 0,
           duration: 0.5,
-        }, 0.74)
+        }, 0.7)
         .from(".hero-3d-stage", {
-          scale: 0.78,
+          scale: 0.8,
           opacity: 0,
-          y: 24,
-          duration: 1.0,
+          y: 20,
+          duration: 0.95,
           ease: "power3.out",
-        }, 0.28)
+        }, 0.25)
         .from(".caption-line", {
           scaleY: 0,
           transformOrigin: "top center",
           duration: 0.55,
-        }, 0.72)
+        }, 0.68)
         .from(".hero-caption > span:last-child", {
           x: -14,
           opacity: 0,
           duration: 0.55,
-        }, 0.82)
+        }, 0.78)
         .from(".scroll-cue", {
           y: -12,
           opacity: 0,
           duration: 0.5,
-        }, 0.95);
+        }, 0.88);
 
       // Flutuação ambiente suave no indicador de rolagem.
       gsap.to(".scroll-cue .icon", {
@@ -609,20 +609,25 @@
         ease: "sine.inOut",
       });
 
-      // 1B. HERO — Parallax multicamada vinculado ao scroll (BG + Glow + Copy + 3D).
+      // 1B. HERO — Parallax multicamada vinculado ao scroll (BG + Copy + 3D).
       const heroParallax = gsap.timeline({
         scrollTrigger: {
           trigger: ".hero",
           start: "top top",
           end: "bottom top",
-          scrub: 0.8,
+          scrub: 0.75,
           invalidateOnRefresh: true,
           onUpdate: (self) => hero3d?.setScroll(self.progress),
         },
       });
 
       heroParallax
-        .to(".hero-image", { yPercent: 18, scale: 1.28, ease: "none" }, 0)
+        .fromTo(
+          ".hero-image",
+          { yPercent: -10, scale: 1.22 },
+          { yPercent: 18, scale: 1.32, ease: "none" },
+          0,
+        )
         .to(".hero-copy", { y: -44, opacity: 0.2, ease: "none" }, 0)
         .to(".hero-caption", { y: -74, opacity: 0, ease: "none" }, 0)
         .to(".scroll-cue", { y: 18, opacity: 0, ease: "none" }, 0);
