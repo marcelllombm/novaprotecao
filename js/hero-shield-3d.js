@@ -1,6 +1,9 @@
-/* Nova Proteção — Escudo 3D Procedural em Three.js (arquitetura code-only). */
+/* Nova Proteção — Emblema 3D Procedural em Three.js baseado em assets/images/logo.png. */
 (() => {
   "use strict";
+
+  const LOGO_SRC = "assets/images/logo.png";
+  const LOGO_ASPECT = 448 / 430;
 
   function createGlowTexture(THREE) {
     const size = 64;
@@ -26,172 +29,245 @@
     return texture;
   }
 
-  function createShieldShape(THREE, scale = 1) {
-    const s = scale;
+  function createSquircleShape(THREE, width, height, radius) {
+    const hw = width / 2;
+    const hh = height / 2;
+    const r = Math.min(radius, hw, hh);
+    const k = r * 0.55228475;
     const shape = new THREE.Shape();
-    shape.moveTo(0, 1.38 * s);
-    shape.bezierCurveTo(
-      0.42 * s,
-      1.36 * s,
-      0.92 * s,
-      1.16 * s,
-      1.08 * s,
-      0.98 * s,
-    );
-    shape.bezierCurveTo(
-      1.11 * s,
-      0.34 * s,
-      0.96 * s,
-      -0.36 * s,
-      0.56 * s,
-      -0.88 * s,
-    );
-    shape.bezierCurveTo(
-      0.34 * s,
-      -1.15 * s,
-      0.14 * s,
-      -1.32 * s,
-      0,
-      -1.42 * s,
-    );
-    shape.bezierCurveTo(
-      -0.14 * s,
-      -1.32 * s,
-      -0.34 * s,
-      -1.15 * s,
-      -0.56 * s,
-      -0.88 * s,
-    );
-    shape.bezierCurveTo(
-      -0.96 * s,
-      -0.36 * s,
-      -1.11 * s,
-      0.34 * s,
-      -1.08 * s,
-      0.98 * s,
-    );
-    shape.bezierCurveTo(
-      -0.92 * s,
-      1.16 * s,
-      -0.42 * s,
-      1.36 * s,
-      0,
-      1.38 * s,
-    );
+
+    shape.moveTo(-hw + r, hh);
+    shape.lineTo(hw - r, hh);
+    shape.bezierCurveTo(hw - r + k, hh, hw, hh - r + k, hw, hh - r);
+    shape.lineTo(hw, -hh + r);
+    shape.bezierCurveTo(hw, -hh + r - k, hw - r + k, -hh, hw - r, -hh);
+    shape.lineTo(-hw + r, -hh);
+    shape.bezierCurveTo(-hw + r - k, -hh, -hw, -hh + r - k, -hw, -hh + r);
+    shape.lineTo(-hw, hh - r);
+    shape.bezierCurveTo(-hw, hh - r + k, -hw + r - k, hh, -hw + r, hh);
     return shape;
   }
 
-  function createCheckShape(THREE) {
-    const shape = new THREE.Shape();
-    shape.moveTo(-0.46, 0.04);
-    shape.lineTo(-0.34, 0.16);
-    shape.lineTo(-0.1, -0.09);
-    shape.lineTo(0.4, 0.42);
-    shape.lineTo(0.52, 0.3);
-    shape.lineTo(-0.1, -0.33);
-    shape.closePath();
-    return shape;
+  function createNormalizedFaceGeometry(THREE, shape, width, height) {
+    const geo = new THREE.ShapeGeometry(shape, 36);
+    const pos = geo.attributes.position;
+    const uvs = new Float32Array(pos.count * 2);
+    for (let i = 0; i < pos.count; i += 1) {
+      const x = pos.getX(i);
+      const y = pos.getY(i);
+      uvs[i * 2] = (x + width / 2) / width;
+      uvs[i * 2 + 1] = (y + height / 2) / height;
+    }
+    geo.setAttribute("uv", new THREE.BufferAttribute(uvs, 2));
+    return geo;
   }
 
-  function createProtectionShieldModel(THREE) {
+  function buildLogoMaps(THREE, image, maxAnisotropy) {
+    const width = image.naturalWidth || 448;
+    const height = image.naturalHeight || 430;
+
+    // 1. Textura de cor principal (albedo) com preenchimento exato #0083c7 sob transparência.
+    const colorCanvas = document.createElement("canvas");
+    colorCanvas.width = width;
+    colorCanvas.height = height;
+    const colorCtx = colorCanvas.getContext("2d");
+    colorCtx.fillStyle = "#0083c7";
+    colorCtx.fillRect(0, 0, width, height);
+    colorCtx.drawImage(image, 0, 0, width, height);
+
+    const colorMap = new THREE.CanvasTexture(colorCanvas);
+    if ("SRGBColorSpace" in THREE) {
+      colorMap.colorSpace = THREE.SRGBColorSpace;
+    }
+    colorMap.anisotropy = maxAnisotropy;
+    colorMap.needsUpdate = true;
+
+    const maps = { colorMap, bumpMap: null, emissiveMap: null, roughnessMap: null };
+
+    // 2. Extrai relevo 3D (bump), brilho especular e emissão dos traços brancos do logo.png.
+    try {
+      const srcData = colorCtx.getImageData(0, 0, width, height);
+      const data = srcData.data;
+
+      const bumpCanvas = document.createElement("canvas");
+      bumpCanvas.width = width;
+      bumpCanvas.height = height;
+      const bumpCtx = bumpCanvas.getContext("2d");
+
+      const emissiveCanvas = document.createElement("canvas");
+      emissiveCanvas.width = width;
+      emissiveCanvas.height = height;
+      const emissiveCtx = emissiveCanvas.getContext("2d");
+
+      const roughCanvas = document.createElement("canvas");
+      roughCanvas.width = width;
+      roughCanvas.height = height;
+      const roughCtx = roughCanvas.getContext("2d");
+
+      const bumpImg = bumpCtx.createImageData(width, height);
+      const emissiveImg = emissiveCtx.createImageData(width, height);
+      const roughImg = roughCtx.createImageData(width, height);
+
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+        // Traços brancos do aperto de mãos têm canal R alto; o azul #0083c7 tem R ≈ 0.
+        const strokeMask = Math.max(0, Math.min(1, (r - 45) / 185));
+        const bumpVal = Math.round(35 + strokeMask * 220);
+        const emitVal = Math.round(strokeMask * 255);
+        // Esmalte azul mais acetinado (76) e traço branco mais polido/cerâmico (28).
+        const roughVal = Math.round(76 - strokeMask * 48);
+
+        bumpImg.data[i] = bumpVal;
+        bumpImg.data[i + 1] = bumpVal;
+        bumpImg.data[i + 2] = bumpVal;
+        bumpImg.data[i + 3] = 255;
+
+        emissiveImg.data[i] = Math.round(emitVal * 0.72);
+        emissiveImg.data[i + 1] = Math.round(emitVal * 0.94);
+        emissiveImg.data[i + 2] = emitVal;
+        emissiveImg.data[i + 3] = 255;
+
+        roughImg.data[i] = roughVal;
+        roughImg.data[i + 1] = roughVal;
+        roughImg.data[i + 2] = roughVal;
+        roughImg.data[i + 3] = 255;
+      }
+
+      bumpCtx.putImageData(bumpImg, 0, 0);
+      emissiveCtx.putImageData(emissiveImg, 0, 0);
+      roughCtx.putImageData(roughImg, 0, 0);
+
+      // Suaviza o bump map para criar chanfro físico realista na borda dos traços brancos.
+      const smoothBump = document.createElement("canvas");
+      smoothBump.width = width;
+      smoothBump.height = height;
+      const smoothCtx = smoothBump.getContext("2d");
+      smoothCtx.filter = "blur(1.6px)";
+      smoothCtx.drawImage(bumpCanvas, 0, 0);
+
+      maps.bumpMap = new THREE.CanvasTexture(smoothBump);
+      maps.bumpMap.anisotropy = maxAnisotropy;
+      maps.bumpMap.needsUpdate = true;
+
+      maps.emissiveMap = new THREE.CanvasTexture(emissiveCanvas);
+      maps.emissiveMap.anisotropy = maxAnisotropy;
+      maps.emissiveMap.needsUpdate = true;
+
+      maps.roughnessMap = new THREE.CanvasTexture(roughCanvas);
+      maps.roughnessMap.anisotropy = maxAnisotropy;
+      maps.roughnessMap.needsUpdate = true;
+    } catch {
+      // Em file:// o canvas pode bloquear getImageData; mantém colorMap sem falhar.
+    }
+
+    return maps;
+  }
+
+  function createLogoMedallionModel(THREE) {
     const root = new THREE.Group();
-    root.name = "novaProtectionShield";
+    root.name = "novaLogoMedallion";
 
-    const shieldPivot = new THREE.Group();
-    shieldPivot.name = "shieldPivot";
-    root.add(shieldPivot);
+    const badgePivot = new THREE.Group();
+    badgePivot.name = "badgePivot";
+    root.add(badgePivot);
 
-    // 1. Moldura externa metálica chanfrada (titânio oceânico).
-    const outerShape = createShieldShape(THREE, 1.0);
-    const outerGeo = new THREE.ExtrudeGeometry(outerShape, {
-      depth: 0.22,
+    const badgeWidth = 2.18;
+    const badgeHeight = badgeWidth / LOGO_ASPECT;
+    const cornerRadius = badgeWidth * 0.174;
+    const extrudeDepth = 0.24;
+    const bevelThickness = 0.08;
+    const bevelSize = 0.055;
+    const halfTotalZ = extrudeDepth / 2 + bevelThickness;
+
+    // 1. Corpo 3D metálico chanfrado no formato squircle exato do logo.png.
+    const bodyShape = createSquircleShape(THREE, badgeWidth, badgeHeight, cornerRadius);
+    const bodyGeo = new THREE.ExtrudeGeometry(bodyShape, {
+      depth: extrudeDepth,
       bevelEnabled: true,
-      bevelThickness: 0.08,
-      bevelSize: 0.06,
-      bevelSegments: 6,
-      curveSegments: 32,
+      bevelThickness,
+      bevelSize,
+      bevelSegments: 8,
+      curveSegments: 36,
     });
-    outerGeo.center();
+    bodyGeo.center();
 
-    const frameMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0x0d3d56,
+    const chassisMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0x045787,
+      emissive: 0x022942,
+      emissiveIntensity: 0.35,
       metalness: 0.82,
-      roughness: 0.22,
+      roughness: 0.2,
       clearcoat: 1.0,
-      clearcoatRoughness: 0.12,
+      clearcoatRoughness: 0.1,
     });
-    const outerMesh = new THREE.Mesh(outerGeo, frameMaterial);
-    outerMesh.name = "shieldFrame";
-    shieldPivot.add(outerMesh);
+    const bodyMesh = new THREE.Mesh(bodyGeo, chassisMaterial);
+    bodyMesh.name = "logoChassis";
+    badgePivot.add(bodyMesh);
 
-    // 2. Núcleo interno translúcido com brilho ciano de proteção.
-    const innerShape = createShieldShape(THREE, 0.84);
-    const innerGeo = new THREE.ExtrudeGeometry(innerShape, {
-      depth: 0.16,
-      bevelEnabled: true,
-      bevelThickness: 0.05,
-      bevelSize: 0.035,
-      bevelSegments: 5,
-      curveSegments: 28,
-    });
-    innerGeo.center();
+    // 2. Faces frontal e traseira com a arte oficial de assets/images/logo.png + relevo 3D.
+    const faceShape = createSquircleShape(
+      THREE,
+      badgeWidth * 0.985,
+      badgeHeight * 0.985,
+      cornerRadius * 0.985,
+    );
+    const faceGeo = createNormalizedFaceGeometry(
+      THREE,
+      faceShape,
+      badgeWidth * 0.985,
+      badgeHeight * 0.985,
+    );
 
-    const coreMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0x0b6fa4,
-      emissive: 0x054f7a,
-      emissiveIntensity: 0.65,
-      metalness: 0.2,
-      roughness: 0.12,
-      transmission: 0.35,
-      transparent: true,
-      opacity: 0.94,
+    const faceMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0xffffff,
+      emissive: 0x70dcff,
+      emissiveIntensity: 0.28,
+      metalness: 0.12,
+      roughness: 0.24,
       clearcoat: 1.0,
       clearcoatRoughness: 0.08,
+      bumpScale: 0.085,
     });
-    const innerMesh = new THREE.Mesh(innerGeo, coreMaterial);
-    innerMesh.position.z = 0.06;
-    innerMesh.name = "shieldGlassCore";
-    shieldPivot.add(innerMesh);
 
-    // 3. Filete luminoso acompanhando o contorno do escudo.
-    const rimPoints = outerShape.getPoints(64).map((p) => new THREE.Vector3(p.x * 1.02, p.y * 1.02, 0.16));
+    const frontFace = new THREE.Mesh(faceGeo, faceMaterial);
+    frontFace.position.z = halfTotalZ + 0.003;
+    frontFace.name = "logoFrontFace";
+    badgePivot.add(frontFace);
+
+    const backFace = new THREE.Mesh(faceGeo, faceMaterial);
+    backFace.position.z = -(halfTotalZ + 0.003);
+    backFace.rotation.y = Math.PI;
+    backFace.name = "logoBackFace";
+    badgePivot.add(backFace);
+
+    // 3. Filete luminoso contornando o chanfro frontal do emblema.
+    const rimShape = createSquircleShape(
+      THREE,
+      badgeWidth + bevelSize * 1.15,
+      badgeHeight + bevelSize * 1.15,
+      cornerRadius + bevelSize * 0.6,
+    );
+    const rimPoints = rimShape
+      .getPoints(72)
+      .map((p) => new THREE.Vector3(p.x, p.y, extrudeDepth / 2 + bevelThickness * 0.45));
     const rimCurve = new THREE.CatmullRomCurve3(rimPoints, true);
-    const rimGeo = new THREE.TubeGeometry(rimCurve, 96, 0.024, 10, true);
+    const rimGeo = new THREE.TubeGeometry(rimCurve, 108, 0.022, 10, true);
     const rimMaterial = new THREE.MeshStandardMaterial({
-      color: 0x7ce0ff,
+      color: 0x8ce5ff,
       emissive: 0x4dc8f5,
-      emissiveIntensity: 1.3,
-      metalness: 0.4,
+      emissiveIntensity: 1.25,
+      metalness: 0.45,
       roughness: 0.18,
     });
     const rimMesh = new THREE.Mesh(rimGeo, rimMaterial);
-    rimMesh.name = "shieldGlowRim";
-    shieldPivot.add(rimMesh);
+    rimMesh.name = "logoGlowRim";
+    badgePivot.add(rimMesh);
 
-    // 4. Emblema checkmark 3D em destaque frontal.
-    const checkGeo = new THREE.ExtrudeGeometry(createCheckShape(THREE), {
-      depth: 0.11,
-      bevelEnabled: true,
-      bevelThickness: 0.028,
-      bevelSize: 0.022,
-      bevelSegments: 4,
-    });
-    checkGeo.center();
-    const checkMaterial = new THREE.MeshStandardMaterial({
-      color: 0xf4fcff,
-      emissive: 0x6cd8ff,
-      emissiveIntensity: 0.9,
-      metalness: 0.25,
-      roughness: 0.15,
-    });
-    const checkMesh = new THREE.Mesh(checkGeo, checkMaterial);
-    checkMesh.position.set(0.02, -0.02, 0.23);
-    checkMesh.name = "shieldCheckmark";
-    shieldPivot.add(checkMesh);
-
-    // 5. Anéis orbitais giroscópicos + satélites luminosos (proteção 24h).
+    // 4. Anéis orbitais giroscópicos + satélites luminosos (proteção contínua 24h).
     const orbitPivotA = new THREE.Group();
-    orbitPivotA.rotation.set(0.52, -0.35, 0.25);
+    orbitPivotA.rotation.set(0.54, -0.34, 0.24);
     root.add(orbitPivotA);
 
     const ringAMat = new THREE.MeshStandardMaterial({
@@ -201,9 +277,9 @@
       metalness: 0.7,
       roughness: 0.2,
       transparent: true,
-      opacity: 0.72,
+      opacity: 0.7,
     });
-    const ringA = new THREE.Mesh(new THREE.TorusGeometry(1.78, 0.018, 14, 96), ringAMat);
+    const ringA = new THREE.Mesh(new THREE.TorusGeometry(1.9, 0.017, 14, 96), ringAMat);
     orbitPivotA.add(ringA);
 
     const beaconMat = new THREE.MeshStandardMaterial({
@@ -212,16 +288,16 @@
       emissiveIntensity: 2.0,
       roughness: 0.1,
     });
-    const beaconA = new THREE.Mesh(new THREE.SphereGeometry(0.068, 16, 16), beaconMat);
-    beaconA.position.set(1.78, 0, 0);
+    const beaconA = new THREE.Mesh(new THREE.SphereGeometry(0.066, 16, 16), beaconMat);
+    beaconA.position.set(1.9, 0, 0);
     orbitPivotA.add(beaconA);
 
-    const beaconA2 = new THREE.Mesh(new THREE.SphereGeometry(0.045, 14, 14), beaconMat);
-    beaconA2.position.set(-1.78, 0, 0);
+    const beaconA2 = new THREE.Mesh(new THREE.SphereGeometry(0.044, 14, 14), beaconMat);
+    beaconA2.position.set(-1.9, 0, 0);
     orbitPivotA.add(beaconA2);
 
     const orbitPivotB = new THREE.Group();
-    orbitPivotB.rotation.set(-0.68, 0.42, -0.4);
+    orbitPivotB.rotation.set(-0.66, 0.4, -0.38);
     root.add(orbitPivotB);
 
     const ringBMat = new THREE.MeshStandardMaterial({
@@ -231,16 +307,16 @@
       metalness: 0.65,
       roughness: 0.25,
       transparent: true,
-      opacity: 0.45,
+      opacity: 0.42,
     });
-    const ringB = new THREE.Mesh(new THREE.TorusGeometry(2.12, 0.012, 12, 96), ringBMat);
+    const ringB = new THREE.Mesh(new THREE.TorusGeometry(2.22, 0.012, 12, 96), ringBMat);
     orbitPivotB.add(ringB);
 
-    const beaconB = new THREE.Mesh(new THREE.SphereGeometry(0.055, 14, 14), beaconMat);
-    beaconB.position.set(0, 2.12, 0);
+    const beaconB = new THREE.Mesh(new THREE.SphereGeometry(0.052, 14, 14), beaconMat);
+    beaconB.position.set(0, 2.22, 0);
     orbitPivotB.add(beaconB);
 
-    // 6. Partículas atmosféricas luminosas (camada ambiente em profundidade).
+    // 5. Partículas atmosféricas luminosas (camada ambiente em profundidade).
     const moteCount = 44;
     const positions = new Float32Array(moteCount * 3);
     const colors = new Float32Array(moteCount * 3);
@@ -248,7 +324,7 @@
     const warmColor = new THREE.Color(0xffe1b0);
 
     for (let i = 0; i < moteCount; i += 1) {
-      const radius = 1.65 + Math.random() * 1.45;
+      const radius = 1.75 + Math.random() * 1.45;
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(2 * Math.random() - 1);
       positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
@@ -285,9 +361,21 @@
     };
 
     root.userData.sculptRuntime = {
-      pivots: { shieldPivot, orbitPivotA, orbitPivotB },
-      materials: { rimMaterial, checkMaterial, coreMaterial },
+      pivots: { badgePivot, orbitPivotA, orbitPivotB },
+      materials: { faceMaterial, rimMaterial, chassisMaterial },
       motes,
+    };
+
+    root.userData.applyLogoTexture = (maps) => {
+      faceMaterial.map = maps.colorMap;
+      if (maps.bumpMap) faceMaterial.bumpMap = maps.bumpMap;
+      if (maps.roughnessMap) faceMaterial.roughnessMap = maps.roughnessMap;
+      if (maps.emissiveMap) {
+        faceMaterial.emissiveMap = maps.emissiveMap;
+      } else {
+        faceMaterial.emissiveIntensity = 0.08;
+      }
+      faceMaterial.needsUpdate = true;
     };
 
     root.userData.tick = (dt, elapsed, targetX, targetY, scrollProgress, boostActive) => {
@@ -301,36 +389,40 @@
       const speed = 1 + state.boost * 1.45;
       const floatY = Math.sin(elapsed * 1.35) * 0.11;
 
-      shieldPivot.position.y = floatY - state.scroll * 0.35;
-      shieldPivot.rotation.y =
-        Math.sin(elapsed * 0.65) * 0.18 +
-        state.pointerX * 0.42 +
-        state.scroll * 0.9;
-      shieldPivot.rotation.x =
-        Math.cos(elapsed * 0.5) * 0.06 -
+      badgePivot.position.y = floatY - state.scroll * 0.35;
+      badgePivot.rotation.y =
+        Math.sin(elapsed * 0.65) * 0.22 +
+        state.pointerX * 0.45 +
+        state.scroll * 1.05;
+      badgePivot.rotation.x =
+        Math.cos(elapsed * 0.5) * 0.065 -
         state.pointerY * 0.28 +
-        state.scroll * 0.25;
-      shieldPivot.rotation.z = Math.sin(elapsed * 0.4) * 0.04;
+        state.scroll * 0.24;
+      badgePivot.rotation.z = Math.sin(elapsed * 0.4) * 0.035;
 
-      const scaleBreath = 1 + Math.sin(elapsed * 1.8) * 0.015 + state.boost * 0.05;
-      shieldPivot.scale.setScalar(scaleBreath);
+      const scaleBreath = 1 + Math.sin(elapsed * 1.8) * 0.015 + state.boost * 0.055;
+      badgePivot.scale.setScalar(scaleBreath);
 
       orbitPivotA.rotation.z += dt * 0.42 * speed;
-      orbitPivotA.rotation.y = -0.35 + state.pointerX * 0.22 + state.scroll * 0.4;
+      orbitPivotA.rotation.y = -0.34 + state.pointerX * 0.22 + state.scroll * 0.4;
       orbitPivotB.rotation.z -= dt * 0.28 * speed;
-      orbitPivotB.rotation.x = -0.68 - state.pointerY * 0.2;
+      orbitPivotB.rotation.x = -0.66 - state.pointerY * 0.2;
 
       motes.rotation.y = elapsed * 0.09 + state.pointerX * 0.16;
       motes.rotation.x = Math.sin(elapsed * 0.2) * 0.08 - state.pointerY * 0.12;
 
-      rimMaterial.emissiveIntensity = 1.2 + Math.sin(elapsed * 2.2) * 0.25 + state.boost * 0.9;
-      checkMaterial.emissiveIntensity = 0.85 + Math.sin(elapsed * 2.2 + 0.6) * 0.2 + state.boost * 0.7;
+      rimMaterial.emissiveIntensity =
+        1.15 + Math.sin(elapsed * 2.2) * 0.25 + state.boost * 0.9;
+      if (faceMaterial.emissiveMap) {
+        faceMaterial.emissiveIntensity =
+          0.26 + Math.sin(elapsed * 2.2 + 0.5) * 0.1 + state.boost * 0.65;
+      }
     };
 
     return root;
   }
 
-  function initHeroShield3D(container, { reducedMotion = false } = {}) {
+  function initHeroLogo3D(container, { reducedMotion = false } = {}) {
     if (!container || !window.THREE) return null;
     const THREE = window.THREE;
 
@@ -349,31 +441,41 @@
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.setClearColor(0x000000, 0);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.15;
+    renderer.toneMappingExposure = 1.12;
     container.replaceChildren(renderer.domElement);
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 50);
-    camera.position.set(0, 0, 6.2);
+    camera.position.set(0, 0, 6.4);
 
-    // Iluminação de estúdio harmonizada com a paleta costeira da hero.
-    const hemi = new THREE.HemisphereLight(0x9be5ff, 0x071b27, 1.35);
+    // Iluminação de estúdio valorizando o esmalte azul #0083c7 e o relevo branco.
+    const hemi = new THREE.HemisphereLight(0xb5ecff, 0x071b27, 1.45);
     scene.add(hemi);
 
-    const keyLight = new THREE.DirectionalLight(0xffffff, 2.2);
-    keyLight.position.set(3.5, 4.5, 5.2);
+    const keyLight = new THREE.DirectionalLight(0xffffff, 2.35);
+    keyLight.position.set(3.4, 4.4, 5.4);
     scene.add(keyLight);
 
-    const warmFill = new THREE.DirectionalLight(0xffd7a3, 1.1);
-    warmFill.position.set(-4.2, -1.8, 3.2);
+    const warmFill = new THREE.DirectionalLight(0xffddb0, 1.05);
+    warmFill.position.set(-4.0, -1.6, 3.2);
     scene.add(warmFill);
 
-    const rimLight = new THREE.PointLight(0x4dc8f5, 5.5, 14);
+    const rimLight = new THREE.PointLight(0x4dc8f5, 5.8, 14);
     rimLight.position.set(-2.2, 2.4, -2.5);
     scene.add(rimLight);
 
-    const model = createProtectionShieldModel(THREE);
+    const model = createLogoMedallionModel(THREE);
     scene.add(model);
+
+    const maxAnisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), 8);
+    const logoImage = new Image();
+    logoImage.decoding = "async";
+    logoImage.onload = () => {
+      const maps = buildLogoMaps(THREE, logoImage, maxAnisotropy);
+      model.userData.applyLogoTexture(maps);
+      renderer.render(scene, camera);
+    };
+    logoImage.src = LOGO_SRC;
 
     let width = 1;
     let height = 1;
@@ -430,7 +532,7 @@
     }
 
     if (reducedMotion) {
-      model.userData.tick(0.016, 0.6, 0, 0, 0, false);
+      model.userData.tick(0.016, 0.4, 0, 0, 0, false);
       renderer.render(scene, camera);
     } else {
       const observer = new IntersectionObserver(
@@ -472,5 +574,5 @@
     };
   }
 
-  window.NOVA_HERO_3D = { init: initHeroShield3D };
+  window.NOVA_HERO_3D = { init: initHeroLogo3D };
 })();
